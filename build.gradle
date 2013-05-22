@@ -1,0 +1,27 @@
+apply plugin: 'groovy'
+
+description = 'Gradle Buster plugin for running busterjs tests'
+group = 'org.gradlebuster'
+version = '0.1'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile gradleApi()
+	groovy localGroovy()
+
+	testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
+	
+}
+
+artifacts {
+	archives jar
+}
+
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.6'
+}
