@@ -1,0 +1,13 @@
+import org.gradle.buster.BusterPlugin
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath files('../build/libs/gradle-buster-plugin-0.1.jar')
+    }
+}
+
+
+apply plugin: BusterPlugin
