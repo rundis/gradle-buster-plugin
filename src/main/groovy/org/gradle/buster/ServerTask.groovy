@@ -9,5 +9,9 @@ class ServerTask extends DefaultTask{
     @TaskAction
     void startServer() {
         println "Starting buster server"
+
+
+        "buster server".execute()
+
     }
 }
