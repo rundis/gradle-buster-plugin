@@ -4,6 +4,11 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 class BusterTestTask extends DefaultTask {
+    static NAME = "busterTest"
+
+    BusterTestTask() {
+        dependsOn CapturePhantomTask.NAME
+    }
 
     @TaskAction
     void busterTest() {

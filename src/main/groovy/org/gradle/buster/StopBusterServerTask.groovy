@@ -6,13 +6,15 @@ import org.gradle.buster.internal.Buster
 
 
 class StopBusterServerTask extends DefaultTask {
+    static NAME = 'stopBusterServer'
+
+    StopBusterServerTask() {
+        onlyIf { Buster.running }
+        dependsOn StopPhantomTask.NAME
+    }
 
     @TaskAction
     void stop() {
-        if(!Buster.running) {
-            logger.warn "Server is not running"
-        }
-
         Buster.stopServer()
     }
 }

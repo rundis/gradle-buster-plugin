@@ -8,10 +8,11 @@ class BusterPlugin implements Plugin<Project>{
 
     @Override
     void apply(Project project) {
-        project.tasks.add "startBusterServer", StartBusterServerTask
-        project.tasks.add "stopBusterServer", StopBusterServerTask
-        project.tasks.add "capturePhantom", CapturePhantomTask
-        project.tasks.add "stopPhantom", StopPhantomTask
-        project.tasks.add "busterTest", BusterTestTask
+
+        project.tasks.create StartBusterServerTask.NAME, StartBusterServerTask
+        project.tasks.create StopBusterServerTask.NAME, StopBusterServerTask
+        project.tasks.create CapturePhantomTask.NAME, CapturePhantomTask
+        project.tasks.create StopPhantomTask.NAME, StopPhantomTask
+        project.tasks.create BusterTestTask.NAME, BusterTestTask
     }
 }
