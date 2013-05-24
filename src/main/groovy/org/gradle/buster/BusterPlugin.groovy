@@ -8,9 +8,10 @@ class BusterPlugin implements Plugin<Project>{
 
     @Override
     void apply(Project project) {
-        project.tasks.add "startServer", ServerTask
-        project.tasks.add "capturePhantomJs", CapturePhantomTask
+        project.tasks.add "startBusterServer", StartBusterServerTask
+        project.tasks.add "stopBusterServer", StopBusterServerTask
+        project.tasks.add "capturePhantom", CapturePhantomTask
+        project.tasks.add "stopPhantom", StopPhantomTask
         project.tasks.add "busterTest", BusterTestTask
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
