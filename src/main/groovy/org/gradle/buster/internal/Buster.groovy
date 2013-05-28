@@ -11,20 +11,26 @@ class Buster {
         def command = "ps aux|grep buster-server|grep node|awk {print\$2}"
 
         Process proc = command.tokenize( '|' ).inject( null ) { p, c ->
-            if( p )
+            if(p) {
                 p | c.execute()
-            else
+            } else {
                 c.execute()
+            }
         }
 
         proc.text
     }
 
-    static void startServer() {
-        def sout = new StringBuffer(), serr = new StringBuffer()
-        def proc = "buster server".execute()
+    static Map startServer() {
+        def proc = new ProcessBuilder("buster", "server").redirectErrorStream(true).start()
+        def out = proc.in.newReader().readLine()
 
-        // TODO: Would be nice to check the output without blocking...
+        proc.in.close()
+        proc.out.close()
+        proc.err.close()
+
+
+        [ok: out.contains("running"), message: out]
     }
 
     static void stopServer() {

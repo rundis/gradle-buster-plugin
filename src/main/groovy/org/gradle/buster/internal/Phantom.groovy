@@ -3,7 +3,6 @@ package org.gradle.buster.internal
 
 class Phantom {
 
-
     static boolean isRunning() {
         pid
     }
@@ -21,11 +20,22 @@ class Phantom {
         proc.text
     }
 
-    static void capturePhantom(File phantomFile) {
-        def sout = new StringBuffer(), serr = new StringBuffer()
-        def proc = "phantomjs ${phantomFile.path}".execute()
+    static Map capturePhantom(File phantomFile) {
+        def proc = new ProcessBuilder("phantomjs", phantomFile.path).redirectErrorStream(true).start()
 
-        // TODO: Would be nice to check the output without blocking...
+
+        sleep(1000)
+
+        // TODO : this blocks and absolutely no output received from phantom
+        //def out = proc.in.newReader().readLine()
+
+
+        proc.in.close()
+        proc.out.close()
+        proc.err.close()
+
+
+        [ok: true, message: "Phantom running"]
     }
 
     static void stopServer() {
@@ -42,18 +52,21 @@ class Phantom {
             captureUrl = system.args[1];
         }
 
+        var fs = require('fs');
+        fs.write('/dev/stdout', 'hello world\n', 'w');
+        phantom.exit(1);
+
+
         phantom.silent = false;
 
-        var page = new WebPage();
+        var page = require('webpage').create();
 
         page.open(captureUrl, function(status) {
             if(!phantom.silent) {
-                //console.log(status);
                 if (status !== 'success') {
                     console.log('phantomjs failed to connect');
                     phantom.exit(1);
                 }
-
                 page.onConsoleMessage = function (msg, line, id) {
                     var fileName = id.split('/');
                     // format the output message with filename, line number and message
