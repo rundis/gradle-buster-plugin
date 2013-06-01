@@ -1,8 +1,9 @@
 apply plugin: 'groovy'
+apply plugin: 'maven'
 
 description = 'Gradle Buster plugin for running busterjs tests'
-group = 'org.gradlebuster'
-version = '0.1'
+group = 'org.gradle.buster'
+version = '0.1-SNAPSHOT'
 
 repositories {
 	mavenCentral()
@@ -20,6 +21,12 @@ artifacts {
 	archives jar
 }
 
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: "file:///Users/mrundberget/projects/rundis-maven-repo/")
+    }
+}
 
 
 task wrapper(type: Wrapper) {

@@ -1,34 +1,4 @@
-package org.gradle.buster.internal
 
-import static org.gradle.buster.internal.CommandUtil.executePiped
-
-
-class Phantom {
-
-    static boolean isRunning() { pid }
-
-    static String getPid() {
-        executePiped "ps aux|grep phantomjs|head -1|awk {print\$2}"
-    }
-
-    static Map capturePhantom(File phantomFile) {
-        def proc = new ProcessBuilder("phantomjs", phantomFile.path).redirectErrorStream(true).start()
-        def out = proc.in.newReader().readLine()
-        proc.in.close()
-        proc.out.close()
-        proc.err.close()
-
-        [ok: out.contains("captured"), message: out]
-    }
-
-    static void stopServer() {
-        if(isRunning()) {
-            "kill -9 ${pid}".execute()
-        }
-    }
-
-    static void createPhantomFile(File phantomFile) {
-        String phantomSetup = """
         var system = require('system'),
         captureUrl = 'http://localhost:1111/capture';
         if (system.args.length==2) {
@@ -59,9 +29,4 @@ class Phantom {
 
         });
 
-        """
-
-        phantomFile << phantomSetup
-    }
-
-}
+        

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites>
+    <testsuite errors="0" tests="3" time="0" failures="0" name="PhantomJS 1.9.0, OS X">
+        <testcase time="0.008" classname="PhantomJS 1.9.0, OS X.A math module" name="squares 1"/>
+        <testcase time="0" classname="PhantomJS 1.9.0, OS X.A math module" name="it raises any number to its power"/>
+        <testcase time="0" classname="PhantomJS 1.9.0, OS X.A math module" name="double as you might expect"/>
+    </testsuite>
+    <testsuite errors="0" tests="3" time="0" failures="0" name="Chrome 27.0.1453.93, OS X">
+        <testcase time="0.003" classname="Chrome 27.0.1453.93, OS X.A math module" name="squares 1"/>
+        <testcase time="0" classname="Chrome 27.0.1453.93, OS X.A math module" name="double as you might expect"/>
+        <testcase time="0" classname="Chrome 27.0.1453.93, OS X.A math module" name="it raises any number to its power"/>
+    </testsuite>
+</testsuites>

@@ -1,24 +1,15 @@
 package org.gradle.buster.internal
 
+import static org.gradle.buster.internal.CommandUtil.executePiped
+
+
 
 class Buster {
 
-    static boolean isRunning() {
-        pid
-    }
+    static boolean isRunning() { pid }
 
     static String getPid() {
-        def command = "ps aux|grep buster-server|grep node|awk {print\$2}"
-
-        Process proc = command.tokenize( '|' ).inject( null ) { p, c ->
-            if(p) {
-                p | c.execute()
-            } else {
-                c.execute()
-            }
-        }
-
-        proc.text
+        executePiped "ps aux|grep buster-server|grep node|awk {print\$2}"
     }
 
     static Map startServer() {
@@ -35,7 +26,7 @@ class Buster {
 
     static void stopServer() {
         if(isRunning()) {
-            "kill -9 ${getPid()}".execute()
+            "kill -9 ${pid}".execute()
         }
     }
 }
