@@ -8,15 +8,18 @@ import org.gradle.buster.internal.Buster
 class StartBusterServerTask extends DefaultTask {
     static String NAME = 'busterServer'
 
+    Buster buster
 
     StartBusterServerTask() {
-        onlyIf { !Buster.running }
+        buster = Buster.instance
+        onlyIf { !buster.running }
     }
 
     @TaskAction
     void start() {
         logger.info "Starting buster server"
-        Map cmdResult = Buster.startServer()
+        def busterConfig = project.convention.getPlugin(BusterPluginConvention).busterConfig
+        Map cmdResult = buster.startServer(busterConfig)
         if(!cmdResult.ok) {
             throw new GradleException("Error starting Buster Server: $cmdResult.message")
         }

@@ -7,15 +7,18 @@ import org.gradle.buster.internal.Buster
 class StopBusterServerTask extends DefaultTask {
     static NAME = 'stopBusterServer'
 
+    Buster buster
+
     StopBusterServerTask() {
-        onlyIf { Buster.running }
+        buster = Buster.instance
+        onlyIf { buster.running }
         dependsOn StopPhantomTask.NAME
     }
 
     @TaskAction
     void stop() {
-        logger.info "Stopping buster server with pid: ${Buster.pid}"
-        Buster.stopServer()
-        assert !Buster.running, "Failed to stop Buster server"
+        logger.info "Stopping buster server with pid: ${buster.pid}"
+        buster.stopServer()
+        assert !buster.running, "Failed to stop Buster server"
     }
 }

@@ -10,4 +10,9 @@ buildscript {
 }
 
 
-apply plugin: BusterPlugin
+apply plugin: 'buster'
+
+// configure buster options
+buster {
+    port = 1112 // override default
+}

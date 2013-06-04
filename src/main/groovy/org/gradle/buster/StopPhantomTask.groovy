@@ -7,14 +7,17 @@ import org.gradle.buster.internal.Phantom
 class StopPhantomTask extends DefaultTask {
     static String NAME = 'stopPhantom'
 
+    Phantom phantom
+
     StopPhantomTask() {
-        onlyIf { Phantom.running }
+        phantom = Phantom.instance
+        onlyIf { phantom.running }
     }
 
     @TaskAction
     void stop() {
         logger.info("Stopping phantom")
-        Phantom.stopServer()
+        phantom.stopServer()
 
     }
 }

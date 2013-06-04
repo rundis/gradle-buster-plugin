@@ -3,15 +3,16 @@ package org.gradle.buster.internal
 import static org.gradle.buster.internal.CommandUtil.executePiped
 
 
+@Singleton
 class Phantom {
 
-    static boolean isRunning() { pid }
+    boolean isRunning() { pid }
 
-    static String getPid() {
+    String getPid() {
         executePiped "ps aux|grep phantomjs|head -1|awk {print\$2}"
     }
 
-    static Map capturePhantom(File phantomFile) {
+    Map capturePhantom(BusterConfig busterConfig, File phantomFile) {
         def proc = new ProcessBuilder("phantomjs", phantomFile.path).redirectErrorStream(true).start()
         def out = proc.in.newReader().readLine()
         proc.in.close()
@@ -21,13 +22,13 @@ class Phantom {
         [ok: out.contains("captured"), message: out]
     }
 
-    static void stopServer() {
+    void stopServer() {
         if(isRunning()) {
             "kill -9 ${pid}".execute()
         }
     }
 
-    static void createPhantomFile(File phantomFile) {
+    void createPhantomFile(BusterConfig busterConfig, File phantomFile) {
         String phantomSetup = """
         var system = require('system'),
         captureUrl = 'http://localhost:1111/capture';

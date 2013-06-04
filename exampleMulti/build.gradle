@@ -13,6 +13,6 @@ buildscript {
 
 subprojects {
     if(file("buster.js").exists()) {
-        apply plugin: BusterPlugin
+        apply plugin: 'buster'
     }
 }
