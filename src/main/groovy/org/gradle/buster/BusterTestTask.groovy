@@ -19,10 +19,11 @@ class BusterTestTask extends DefaultTask {
         if (!reportsDir.exists()) {
             reportsDir.mkdirs()
         }
+        def busterConfig = project.convention.getPlugin(BusterPluginConvention).busterConfig
 
         project.exec {
             executable "buster"
-            args = ["test", "--reporter", "xml"]
+            args = ["test", "--reporter", "xml", "--server", "http://localhost:${busterConfig.port}"]
             standardOutput = new FileOutputStream(outputFile)
         }
 

@@ -31,7 +31,7 @@ class Phantom {
     void createPhantomFile(BusterConfig busterConfig, File phantomFile) {
         String phantomSetup = """
         var system = require('system'),
-        captureUrl = 'http://localhost:1111/capture';
+        captureUrl = 'http://localhost:${busterConfig.port}/capture';
         if (system.args.length==2) {
             captureUrl = system.args[1];
         }

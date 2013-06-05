@@ -13,7 +13,7 @@ class Buster {
     }
 
     Map startServer(BusterConfig busterConfig) {
-        def proc = new ProcessBuilder("buster", "server").redirectErrorStream(true).start()
+        def proc = new ProcessBuilder("buster", "server", "-p", busterConfig.port.toString()).redirectErrorStream(true).start()
         def out = proc.in.newReader().readLine()
 
         proc.in.close()

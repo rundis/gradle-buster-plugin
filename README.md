@@ -1,6 +1,6 @@
 A gradle plugin for running buster.js tests.
 
-====Preconditions====
+### Preconditions
 * NodeJS/npm
-* PhantomJS
-* Buster.js node module
+* PhantomJS (?mac -> $ brew install phantomjs)
+* [Buster.js node module](http://busterjs.org/docs/getting-started/)

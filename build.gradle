@@ -28,6 +28,27 @@ uploadArchives {
     }
 }
 
+sourceSets {
+    integrationTest {
+        groovy {
+            srcDir 'src/integrationtest/groovy'
+        }
+        resources {
+            srcDir 'src/integrationtest/resources'
+        }
+        compileClasspath += sourceSets.test.runtimeClasspath
+    }
+}
+
+task integrationTest(type: Test) {
+    description = "Runs Integration Tests"
+    dependsOn 'jar'
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath += sourceSets.integrationTest.runtimeClasspath
+}
+build.dependsOn integrationTest
+
+
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.6'
