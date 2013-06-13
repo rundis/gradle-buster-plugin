@@ -36,6 +36,7 @@ buster {
 * busterServer : Starts the buster server
 * capturePhantom : Captures phantom browser in buster server (depends on busterServer task)
 * busterTest : Run buster test. Assumes you have configured buster.js for your project. (depends on capturePhantom task)
+    * Test output in junit format can be found in $project/build/test-results/bustertest.xml
 * stopPhantom: Stops the capture phantom browser (might be a good idea sometimes to ensure reproducable tests)
 * stopBusterServer : Stops the buster server. (Depends on stopPhantom)
 
