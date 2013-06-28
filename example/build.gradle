@@ -3,8 +3,12 @@ import org.gradle.plugins.buster.BusterPlugin
 buildscript {
     repositories {
         mavenCentral()
+        //mavenRepo url: 'http://dl.bintray.com/rundis/maven'
+
+
     }
     dependencies {
+        //classpath 'org.gradle.buster:gradle-buster-plugin:0.1.0'
         classpath files('../build/libs/gradle-buster-plugin-0.1-SNAPSHOT.jar')
     }
 }

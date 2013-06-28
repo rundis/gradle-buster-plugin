@@ -3,7 +3,7 @@ apply plugin: 'maven'
 
 description = 'Gradle Buster plugin for running busterjs tests'
 group = 'org.gradle.buster'
-version = '0.1-SNAPSHOT'
+version = '0.1.0'
 
 repositories {
 	mavenCentral()
@@ -24,9 +24,31 @@ artifacts {
 
 uploadArchives {
     repositories.mavenDeployer {
-        repository(url: "file:///Users/mrundberget/projects/rundis-maven-repo/")
+        repository(url: "https://api.bintray.com/maven/rundis/maven/gradle-buster-plugin") {
+            authentication (
+                userName:  bintray_username,
+                password:  bintray_api_key
+            )
+        }
     }
 }
+
+/*publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories{
+        maven {
+            url https://api.bintray.com/content/rundis/maven/gradle-buster-plugin'
+            credentials {
+                username = bintray_username
+                password = bintray_api_key
+            }
+        }
+    }
+} */
 
 sourceSets {
     integrationTest {
