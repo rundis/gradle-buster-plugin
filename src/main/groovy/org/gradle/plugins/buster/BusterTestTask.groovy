@@ -1,4 +1,4 @@
-package org.gradle.buster
+package org.gradle.plugins.buster
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException

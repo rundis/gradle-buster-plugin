@@ -1,5 +1,4 @@
-package org.gradle.buster
-
+package org.gradle.plugins.buster
 
 class StopPhantomTaskSpec extends AbstractBusterSpecification {
     StopPhantomTask task

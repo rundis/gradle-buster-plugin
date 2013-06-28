@@ -1,7 +1,6 @@
-package org.gradle.buster
+package org.gradle.plugins.buster
 
 import org.gradle.api.GradleException
-
 
 class CapturePhantomTaskSpec extends AbstractBusterSpecification {
     CapturePhantomTask task

@@ -1,7 +1,7 @@
-package org.gradle.buster
+package org.gradle.plugins.buster
 
 import org.gradle.api.Project
-import org.gradle.buster.internal.BusterConfig
+import org.gradle.plugins.buster.internal.BusterConfig
 import org.gradle.util.ConfigureUtil
 
 

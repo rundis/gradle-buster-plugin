@@ -1,10 +1,10 @@
-package org.gradle.buster
+package org.gradle.plugins.buster
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
-import org.gradle.buster.internal.Buster
-import org.gradle.buster.internal.Phantom
+import org.gradle.plugins.buster.internal.Buster
+import org.gradle.plugins.buster.internal.Phantom
 
 class CapturePhantomTask extends DefaultTask {
     static String NAME = 'capturePhantom'

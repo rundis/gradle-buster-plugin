@@ -1,6 +1,6 @@
-package org.gradle.buster.internal
+package org.gradle.plugins.buster.internal
 
-import static org.gradle.buster.internal.CommandUtil.executePiped
+import static CommandUtil.executePiped
 
 
 @Singleton

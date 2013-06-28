@@ -1,9 +1,10 @@
-package org.gradle.buster
+package org.gradle.plugins.buster
 
 import org.gradle.api.Project
-import org.gradle.buster.internal.Buster
-import org.gradle.buster.internal.BusterConfig
-import org.gradle.buster.internal.Phantom
+import org.gradle.plugins.buster.internal.Buster
+import org.gradle.plugins.buster.internal.BusterConfig
+import org.gradle.plugins.buster.internal.Phantom
+import org.gradle.plugins.buster.BusterPluginConvention
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 

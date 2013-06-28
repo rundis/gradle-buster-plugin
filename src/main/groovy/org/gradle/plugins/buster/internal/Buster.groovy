@@ -1,7 +1,4 @@
-package org.gradle.buster.internal
-
-import static org.gradle.buster.internal.CommandUtil.executePiped
-
+package org.gradle.plugins.buster.internal
 
 @Singleton
 class Buster {
@@ -9,7 +6,7 @@ class Buster {
     boolean isRunning() { pid }
 
     String getPid() {
-        executePiped "ps aux|grep buster-server|grep node|awk {print\$2}"
+        org.gradle.plugins.buster.internal.CommandUtil.executePiped "ps aux|grep buster-server|grep node|awk {print\$2}"
     }
 
     Map startServer(BusterConfig busterConfig) {

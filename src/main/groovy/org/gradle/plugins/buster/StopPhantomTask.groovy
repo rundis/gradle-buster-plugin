@@ -1,8 +1,8 @@
-package org.gradle.buster
+package org.gradle.plugins.buster
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import org.gradle.buster.internal.Phantom
+import org.gradle.plugins.buster.internal.Phantom
 
 class StopPhantomTask extends DefaultTask {
     static String NAME = 'stopPhantom'

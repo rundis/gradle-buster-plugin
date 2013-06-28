@@ -1,5 +1,4 @@
-package org.gradle.buster
-
+package org.gradle.plugins.buster
 
 class StopBusterServerTaskSpec extends AbstractBusterSpecification {
     StopBusterServerTask task

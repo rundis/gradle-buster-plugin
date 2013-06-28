@@ -1,4 +1,4 @@
-package org.gradle.buster.internal
+package org.gradle.plugins.buster.internal
 
 
 class CommandUtil {

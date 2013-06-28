@@ -1,4 +1,4 @@
-package org.gradle.buster
+package org.gradle.plugins.buster
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

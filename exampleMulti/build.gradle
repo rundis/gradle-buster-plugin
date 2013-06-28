@@ -1,4 +1,4 @@
-import org.gradle.buster.BusterPlugin
+import org.gradle.plugins.buster.BusterPlugin
 
 buildscript {
     repositories {
