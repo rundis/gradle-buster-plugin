@@ -11,10 +11,9 @@ class BusterPlugin implements Plugin<Project>{
         project.convention.plugins.put 'buster', new BusterPluginConvention(project)
 
         project.tasks.create StartBusterServerTask.NAME, StartBusterServerTask
-        project.tasks.create StopBusterServerTask.NAME, StopBusterServerTask
-        project.tasks.create CapturePhantomTask.NAME, CapturePhantomTask
+        project.tasks.create (StopBusterServerTask.NAME, StopBusterServerTask).dependsOn StopPhantomTask.NAME
+        project.tasks.create (CapturePhantomTask.NAME, CapturePhantomTask).dependsOn StartBusterServerTask.NAME
         project.tasks.create StopPhantomTask.NAME, StopPhantomTask
-        project.tasks.create BusterTestTask.NAME, BusterTestTask
-        project.tasks.create BusterAutoTestTask.NAME, BusterAutoTestTask
+        project.tasks.create (BusterTestTask.NAME, BusterTestTask).dependsOn CapturePhantomTask.NAME
     }
 }

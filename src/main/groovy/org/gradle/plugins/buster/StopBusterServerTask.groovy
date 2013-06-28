@@ -12,7 +12,6 @@ class StopBusterServerTask extends DefaultTask {
     StopBusterServerTask() {
         buster = Buster.instance
         onlyIf { buster.running }
-        dependsOn StopPhantomTask.NAME
     }
 
     @TaskAction

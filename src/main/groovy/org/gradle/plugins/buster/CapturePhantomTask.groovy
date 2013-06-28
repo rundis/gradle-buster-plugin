@@ -18,7 +18,6 @@ class CapturePhantomTask extends DefaultTask {
         buster = Buster.instance
         phantomFile = new File(project.buildDir, "phantom.js")
         onlyIf { !phantom.running }
-        dependsOn StartBusterServerTask.NAME
     }
 
     @TaskAction

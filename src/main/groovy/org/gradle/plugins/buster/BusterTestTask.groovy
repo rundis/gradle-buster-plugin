@@ -7,13 +7,10 @@ import org.gradle.api.tasks.TaskAction
 class BusterTestTask extends DefaultTask {
     static NAME = "busterTest"
 
-    File reportsDir = new File(project.buildDir, "test-results")
+    File reportsDir = new File(project.buildDir, "busterTest-results")
     File outputFile = new File(reportsDir.path, "bustertests.xml")
 
 
-    BusterTestTask() {
-        dependsOn CapturePhantomTask.NAME
-    }
 
     @TaskAction
     void test() {
