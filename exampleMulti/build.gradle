@@ -4,7 +4,7 @@ buildscript {
     repositories {
         mavenCentral()
 
-        mavenRepo urls: 'https://github.com/rundis/rundis-maven-repo/raw/master/'
+        mavenRepo url: 'https://github.com/rundis/rundis-maven-repo/raw/master/'
 
     }
     dependencies {
@@ -15,7 +15,13 @@ buildscript {
 
 
 subprojects {
-    if(file("buster.js").exists()) {
-        apply plugin: 'buster'
+    apply plugin: 'buster'
+}
+
+project(':example2') {
+    buster {
+        configFile = file('config/buster.js')
     }
 }
+
+

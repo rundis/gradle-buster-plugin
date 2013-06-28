@@ -14,25 +14,38 @@ class BusterTestTask extends DefaultTask {
 
     @TaskAction
     void test() {
-        if (!reportsDir.exists()) {
-            reportsDir.mkdirs()
-        }
-        if(outputFile.exists()) {outputFile.delete()}
-
-
-        def busterConfig = project.convention.getPlugin(BusterPluginConvention).busterConfig
+        setupReportDir()
 
         def stdOut = new ByteArrayOutputStream()
+        def busterArgs = busterArgs()
 
         def execResult = project.exec {
             executable "buster"
-            args = ["test", "--reporter", "xml", "--server", "http://localhost:${busterConfig.port}"]
+            args = busterArgs
             standardOutput = stdOut
             ignoreExitValue = true
         }
 
         writeXmlReport(stdOut)
         execResult.exitValue == 0 ? logResults() : logTestErrors()
+    }
+
+    private void setupReportDir() {
+        if (!reportsDir.exists()) {
+            reportsDir.mkdirs()
+        }
+        if (outputFile.exists()) {
+            outputFile.delete()
+        }
+    }
+
+    private List busterArgs() {
+        def busterConfig = project.convention.getPlugin(BusterPluginConvention).busterConfig
+        def busterArgs = ["test", "--reporter", "xml", "--server", "http://localhost:${busterConfig.port}"]
+        if (busterConfig.configFile) {
+            busterArgs += ["--config", busterConfig.configFile.absolutePath]
+        }
+        busterArgs
     }
 
     private void writeXmlReport(OutputStream outXml) {

@@ -1,6 +1,6 @@
 buster.spec.expose(); // Make some functions global
 
-describe("A math module", function () {
+describe("A math module 1", function () {
     this.foo = new myapp.Math();
 
     it("squares 1", function () {
