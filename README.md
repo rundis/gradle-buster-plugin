@@ -42,3 +42,6 @@ buster {
 
 All tasks have sanitychecks of whether they need to execute or not.
 The only exception currently is busterTest which would benefit from incremental support.
+
+### License
+The BSD 2-Clause License
