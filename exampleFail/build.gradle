@@ -1,0 +1,19 @@
+import org.gradle.plugins.buster.BusterPlugin
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath files('../build/libs/gradle-buster-plugin-0.1-SNAPSHOT.jar')
+    }
+}
+
+
+apply plugin: 'buster'
+
+
+busterTest {
+    busterKillOnFail = project.hasProperty("busterKillOnFail") && project.busterKillOnFail ?: false
+}
+

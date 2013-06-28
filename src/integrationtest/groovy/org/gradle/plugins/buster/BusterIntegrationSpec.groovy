@@ -9,7 +9,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
 
-class SingleProjectIntegrationSpec extends Specification {
+class BusterIntegrationSpec extends Specification {
 
     File singleProjectDir = new File("example")
     File singleProjectBuildFile = new File(singleProjectDir, "build.gradle")
@@ -18,9 +18,24 @@ class SingleProjectIntegrationSpec extends Specification {
     File multiprojectBuildFile = new File(multiprojectBuildDir, "build.gradle")
 
 
+    File exampleFailBuildDir = new File("exampleFail")
+    File exampleFailBuildFile = new File(exampleFailBuildDir, "build.gradle")
+
+
     def setup() {
         assert singleProjectBuildFile.exists(), "Example build file not found"
         assert multiprojectBuildFile.exists(), "ExampleMulti build file not found"
+        assert exampleFailBuildFile.exists(), "Example fail build file not found"
+    }
+
+    def teardown() {
+        if(Buster.instance.running) {
+            Buster.instance.stopServer()
+        }
+        if(Phantom.instance.running) {
+            Phantom.instance.stopServer()
+        }
+
     }
 
 
@@ -67,6 +82,32 @@ class SingleProjectIntegrationSpec extends Specification {
         !Phantom.instance.running
 
     }
+
+    def "run failing tests with killOnFailure set cleans up"() {
+        given:
+        def project = ProjectBuilder.builder().build().with {
+
+            task(type: GradleBuild, 'test') {
+                dir = exampleFailBuildDir.absolutePath
+                tasks = ['busterTest']
+                startParameter.projectProperties['busterKillOnFail']=true
+            }
+            it
+        }
+        Task test = project.tasks["test"]
+
+
+        when:
+        test.execute()
+
+        then:
+        Exception ex = thrown()
+        !Buster.instance.running
+        !Phantom.instance.running
+
+
+    }
+
 
 
     Project project(File buildDir) {

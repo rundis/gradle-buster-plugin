@@ -11,23 +11,27 @@ _Big disclaimer: Will not run on Windows_
 * [Gradle](http://www.gradle.org) 1.6 or higher
 * [NodeJS/npm](http://nodejs.org/) - Precondition for Buster.js. Gives you superfast javascript tests.
 * [Buster.js node module](http://busterjs.org/docs/getting-started/) - The kickass javascript test framework this plugin is all about enabling in your gradle builds.
-* PhantomJS - Required for enabling headless testing on your CI server. It makes sense that you also test with phantom during development.
+* [PhantomJS](http://phantomjs.org/) - Required for enabling headless testing on your CI server. It makes sense that you also test with phantom during development.
 
 In addition you may of course test locally with any browser(s) you wish. In fact You should be able to do all your buster testing without thinking much about the gradle plugin.
 
 
 ### Set up plugin
 ```groovy
-	buildscript {
-	    repositories {
-	        mavenRepo urls: 'https://github.com/rundis/rundis-maven-repo/raw/master/'
-	    }
-	    dependencies {
-	        classpath  'org.gradle.buster:gradle-buster-plugin:0.1-SNAPSHOT'
-	    }
-	}
+buildscript {
+    repositories {
+        mavenRepo urls: 'https://github.com/rundis/rundis-maven-repo/raw/master/'
+    }
+    dependencies {
+        classpath  'org.gradle.buster:gradle-buster-plugin:0.1-SNAPSHOT'
+    }
+}
 
 apply plugin: 'buster'
+
+
+build.dependsOn busterTest, stopBusterServer // Optional, hook up the relevant buster tasks into your build task graph
+
 ```
 
 ### Configuration options
@@ -53,9 +57,38 @@ All tasks have sanitychecks of whether they need to execute or not.
 The only exception currently is busterTest which would benefit from incremental support.
 
 
+#### busterTest
+You may configure the busterTest task with the following options
+* _busterKillOnFail_  -  If true the task will kill phantom and buster server on test failure (or failure to launch buster test)
+
+The following example shows how you would make it conditional (to allow CI to always do it, whilst for development you leave it running)
+```groovy
+busterTest {
+    busterKillOnFail = project.hasProperty("busterKillOnFail") && project.busterKillOnFail ?: false
+}
+```
+
+Now on your CI server you specify -PbusterKillOnFail=true to ensure that the buster server and phantom processes aren't left dangling.
+
+
+
+
+### Usage scenarios
+
+#### As part of a CI build
+* You would typically either 
+	* hook up the relevant gradle tasks as dependencies in your build task graph (as shown in the top)
+	* or specify gradle busterTest stopBusterServer in a gradle build step in your build server config
+* Its hightly recommended to set up busterKillOnFail to true on the busterTestTask as shown above. Alternatively you may
+add a gradle build step in your build config that invokes stopBusterServer, and then have busterTest in a separate build step running after. This way you ensure there aren't any dangling processes left before your tests start running. The main culprit would be PhantomJS, that could be left running and the on subsequent build runs you will not be able to capture phantom. 
+
+
+
+
 ### Version history
 
 #### 0.1.0
+Initial release with bare bone functionality.
 
 ### License
 The BSD 2-Clause License
