@@ -17,6 +17,7 @@ In addition you may of course test locally with any browser(s) you wish. In fact
 
 
 ### Set up plugin
+
 ```groovy
 buildscript {
     repositories {
@@ -38,7 +39,7 @@ build.dependsOn busterTest, stopBusterServer // Optional, hook up the relevant b
 ```groovy
 buster {
 	port = 1112 // override default of 1111 for buster, optional to specify
-	configFile = file('config/buster.js') // If left out it will look in $project.projectDir/buster.js | $project.projectDir/test/buster.js | $project.projectDir/spec/buster.js
+	configFile = file('config/buster.js') /* If left out it will look in $project.projectDir/buster.js | $project.projectDir/test/buster.js | $project.projectDir/spec/buster.js */
 }
 ```
 
@@ -62,6 +63,7 @@ You may configure the busterTest task with the following options
 * _busterKillOnFail_  -  If true the task will kill phantom and buster server on test failure (or failure to launch buster test)
 
 The following example shows how you would make it conditional (to allow CI to always do it, whilst for development you leave it running)
+
 ```groovy
 busterTest {
     busterKillOnFail = project.hasProperty("busterKillOnFail") && project.busterKillOnFail ?: false
@@ -80,7 +82,9 @@ Now on your CI server you specify -PbusterKillOnFail=true to ensure that the bus
 	* hook up the relevant gradle tasks as dependencies in your build task graph (as shown in the top)
 	* or specify gradle busterTest stopBusterServer in a gradle build step in your build server config
 * Its hightly recommended to set up busterKillOnFail to true on the busterTestTask as shown above. Alternatively you may
-add a gradle build step in your build config that invokes stopBusterServer, and then have busterTest in a separate build step running after. This way you ensure there aren't any dangling processes left before your tests start running. The main culprit would be PhantomJS, that could be left running and the on subsequent build runs you will not be able to capture phantom. 
+add a gradle build step in your build config that invokes stopBusterServer, and then have busterTest in a separate build step running after.
+This way you ensure there aren't any dangling processes left before your tests start running.
+The main culprit would be PhantomJS, that could be left running and the on subsequent build runs you will not be able to capture phantom.
 
 
 

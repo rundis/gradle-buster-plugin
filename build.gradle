@@ -3,7 +3,7 @@ apply plugin: 'maven'
 
 description = 'Gradle Buster plugin for running busterjs tests'
 group = 'org.gradle.buster'
-version = '0.1.0'
+version = '0.1.1-SNAPSHOT'
 
 repositories {
 	mavenCentral()
