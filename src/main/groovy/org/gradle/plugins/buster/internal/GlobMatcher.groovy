@@ -11,7 +11,7 @@ class GlobMatcher {
 
 
     GlobMatcher(String rootPath, List<String> globPatterns) {
-        this.rootPath = rootPath
+        this.rootPath = rootPath.endsWith("/") ? rootPath : rootPath + "/"
         this.globPatterns = globPatterns.collect{
             def pattern = it.replaceAll("\\**/", "**")
             Pattern.compile(windows ? Globs.toWindowsRegexPattern(pattern) : Globs.toUnixRegexPattern(pattern))

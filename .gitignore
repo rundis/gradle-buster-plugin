@@ -1,5 +1,6 @@
 /build
 /example/build
+/exampleFail/build
 /exampleMulti/build
 /exampleMulti/example/build
 /exampleMulti/example2/build

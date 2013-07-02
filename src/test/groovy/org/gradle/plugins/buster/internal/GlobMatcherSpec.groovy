@@ -40,8 +40,16 @@ class GlobMatcherSpec extends Specification {
         matcher.matches("lib/dill.js")
         matcher.matches("lib/dall/dill.js")
         !matcher.matches("lib/dall.txt")
-
     }
+
+    def "adds pathseparator to end if not given"() {
+        given:
+        def matcher = new GlobMatcher("/usr/local/project/dill", ["**/*.js"])
+
+        expect:
+        matcher.rootPath == "/usr/local/project/dill/"
+    }
+
 
     private GlobMatcher globMatcher(List globPatterns) {
         new GlobMatcher(ROOTPATH, globPatterns)
