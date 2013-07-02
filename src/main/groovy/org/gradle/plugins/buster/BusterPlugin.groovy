@@ -15,5 +15,6 @@ class BusterPlugin implements Plugin<Project>{
         project.tasks.create (CapturePhantomTask.NAME, CapturePhantomTask).dependsOn StartBusterServerTask.NAME
         project.tasks.create StopPhantomTask.NAME, StopPhantomTask
         project.tasks.create (BusterTestTask.NAME, BusterTestTask).dependsOn CapturePhantomTask.NAME
+        project.tasks.create (BusterAutoTestTask.NAME, BusterAutoTestTask).dependsOn CapturePhantomTask.NAME
     }
 }

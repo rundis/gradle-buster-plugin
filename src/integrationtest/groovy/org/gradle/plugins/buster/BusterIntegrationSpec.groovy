@@ -99,8 +99,9 @@ class BusterIntegrationSpec extends Specification {
 
         when:
         test.execute()
-
+        sleep(100)
         then:
+
         Exception ex = thrown()
         !Buster.instance.running
         !Phantom.instance.running
