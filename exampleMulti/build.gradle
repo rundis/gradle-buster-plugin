@@ -8,7 +8,7 @@ buildscript {
 
     }
     dependencies {
-        classpath  files('../build/libs/gradle-buster-plugin-0.1.1-SNAPSHOT.jar') //'org.gradle.buster:gradle-buster-plugin:0.1-SNAPSHOT'
+        classpath  files('../build/libs/gradle-buster-plugin-0.1.1.jar'), 'net.sf.jpathwatch:jpathwatch:0.95' //'org.gradle.buster:gradle-buster-plugin:0.1-SNAPSHOT'
     }
 }
 

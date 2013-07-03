@@ -24,7 +24,7 @@ buildscript {
         mavenRepo urls: 'http://dl.bintray.com/rundis/maven'
     }
     dependencies {
-        classpath  'org.gradle.buster:gradle-buster-plugin:0.1.0'
+        classpath  'org.gradle.buster:gradle-buster-plugin:0.1.1'
     }
 }
 
@@ -34,6 +34,23 @@ apply plugin: 'buster'
 build.dependsOn busterTest, stopBusterServer // Optional, hook up the relevant buster tasks into your build task graph
 
 ```
+
+#### Once gradle 1.7 is released it should be even simpler
+```groovy
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath  'org.gradle.buster:gradle-buster-plugin:0.1.1'
+    }
+}
+
+apply plugin: 'buster'
+
+
+build.dependsOn busterTest, stopBusterServer // Optional, hook up the relevant buster tasks into your build task graph
+
+```
+
 
 ### Configuration options
 ```groovy
@@ -53,6 +70,8 @@ Please note that in a multiproject setting, you are in trouble if you start sett
     * Test output in junit format can be found in $project/build/busterTest-results/bustertest.xml
 * stopPhantom: Stops the capture phantom browser (might be a good idea sometimes to ensure reproducable tests)
 * stopBusterServer : Stops the buster server. (Depends on stopPhantom)
+* busterAutoTest : Run buster testing in continuous mode (depends on capturePhantom task). Any changes/adds/deletes to files matching glob patterns in
+the buster.js configuration file will automatically trigger a buster test run.
 
 All tasks have sanitychecks of whether they need to execute or not.
 The only exception currently is busterTest which would benefit from incremental support.
@@ -73,6 +92,9 @@ busterTest {
 Now on your CI server you specify -PbusterKillOnFail=true to ensure that the buster server and phantom processes aren't left dangling.
 
 
+#### busterAutoTest
+* This task will keep the gradle build running (ctrl+c to quit).
+* It doesn't support multiprojects very nicely, so you would need to do something along the lines of _$ gradle :subproject:busterAutoTest_ for each subproject
 
 
 ### Usage scenarios
@@ -90,6 +112,9 @@ The main culprit would be PhantomJS, that could be left running and the on subse
 
 
 ### Version history
+
+#### 0.1.1
+* Added incubating support for auto testing (Continuous testing)
 
 #### 0.1.0
 Initial release with bare bone functionality.

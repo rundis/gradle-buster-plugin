@@ -1,9 +1,9 @@
 apply plugin: 'groovy'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 description = 'Gradle Buster plugin for running busterjs tests'
 group = 'org.gradle.buster'
-version = '0.1.1-SNAPSHOT'
+version = '0.1.1'
 
 repositories {
 	mavenCentral()
@@ -23,58 +23,33 @@ dependencies {
 }
 
 task sourceJar(type: Jar) {
-    classifier = 'sources'
     from sourceSets.main.allSource
 }
 
 
-artifacts {
-	archives jar
-    sourceArchives sourceJar
-}
-
-
-
-
-uploadArchives {
-    repositories.mavenDeployer {
-        repository(url: "https://api.bintray.com/maven/rundis/maven/gradle-buster-plugin") {
-            authentication (
-                userName:  bintray_username,
-                password:  bintray_api_key
-            )
-        }
-    }
-}
-
-uploadSourceArchives {
-    repositories.mavenDeployer {
-        repository(url: "https://api.bintray.com/maven/rundis/maven/gradle-buster-plugin") {
-            authentication (
-                    userName:  bintray_username,
-                    password:  bintray_api_key
-            )
-        }
-    }
-}
-
-
-/*publishing {
+publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
         }
+
     }
     repositories{
         maven {
-            url https://api.bintray.com/content/rundis/maven/gradle-buster-plugin'
-            credentials {
-                username = bintray_username
-                password = bintray_api_key
-            }
+            url "https://api.bintray.com/maven/rundis/maven/gradle-buster-plugin"
+                    credentials {
+                        username = bintray_username
+                        password = bintray_api_key
+                    }
         }
     }
-} */
+}
+
+
 
 sourceSets {
     integrationTest {

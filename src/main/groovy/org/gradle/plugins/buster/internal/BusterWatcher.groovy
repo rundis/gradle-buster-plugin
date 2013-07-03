@@ -67,11 +67,12 @@ class BusterWatcher {
                 WatchEvent.Kind kind = event.kind()
 
                 if (kind == OVERFLOW) {
-                    println("Overflow...")
+                    project.logger.warn("Watcher overflow")
                     continue
                 }
 
                 Path child = resolveChild(dir, event)
+
                 if(globMatcher.matches(child.toString())) {
                     listener(event.kind().name(), child)
                 }
