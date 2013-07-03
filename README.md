@@ -21,6 +21,7 @@ In addition you may of course test locally with any browser(s) you wish. In fact
 ```groovy
 buildscript {
     repositories {
+        mavenCentral()
         mavenRepo urls: 'http://dl.bintray.com/rundis/maven'
     }
     dependencies {
