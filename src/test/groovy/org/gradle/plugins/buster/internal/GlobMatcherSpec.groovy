@@ -14,7 +14,7 @@ class GlobMatcherSpec extends Specification {
     @Unroll("#path")
     def "matches if any glob mattern matches"() {
         given:
-        def matcher = globMatcher(["*.jsf", "**/*.js", "lib/**.txt"])
+        def matcher = globMatcher(["*.jsf", "**/*.js", "lib/**/*.txt"])
 
         expect:
         matcher.matches(path) == matches

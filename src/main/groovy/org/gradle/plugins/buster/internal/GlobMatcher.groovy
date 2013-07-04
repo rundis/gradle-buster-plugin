@@ -1,32 +1,18 @@
 package org.gradle.plugins.buster.internal
 
-import sun.nio.fs.Globs
-
-import java.util.regex.Pattern
-
+import org.apache.tools.ant.types.selectors.SelectorUtils
 
 class GlobMatcher {
     private final String rootPath
-    private final List<Pattern> globPatterns
-
+    private final List<String> globPatterns
 
     GlobMatcher(String rootPath, List<String> globPatterns) {
         this.rootPath = rootPath.endsWith("/") ? rootPath : rootPath + "/"
-        this.globPatterns = globPatterns.collect{
-            def pattern = it.replaceAll("\\**/", "**")
-            Pattern.compile(windows ? Globs.toWindowsRegexPattern(pattern) : Globs.toUnixRegexPattern(pattern))
-        }
+        this.globPatterns = globPatterns
     }
 
     boolean matches(String path) {
         def candidate = (path - rootPath)
-        globPatterns.find{it.matcher(candidate).matches()}
+        globPatterns.find{SelectorUtils.matchPath(it, candidate)}
     }
-
-
-    private static boolean isWindows() {
-        System.properties['os.name'].contains('windows')
-    }
-
-
 }
