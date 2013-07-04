@@ -10,7 +10,7 @@ _Big disclaimer: Will not run on Windows_
 ### Preconditions
 * [Gradle](http://www.gradle.org) 1.6 or higher
 * [NodeJS/npm](http://nodejs.org/) - Precondition for Buster.js. Gives you superfast javascript tests.
-* [Buster.js node module](http://busterjs.org/docs/getting-started/) - The kickass javascript test framework this plugin is all about enabling in your gradle builds.
+* [Buster.js node module](http://docs.busterjs.org/en/latest/) - The kickass javascript test framework this plugin is all about enabling in your gradle builds.
 * [PhantomJS](http://phantomjs.org/) - Required for enabling headless testing on your CI server. It makes sense that you also test with phantom during development.
 
 In addition you may of course test locally with any browser(s) you wish. In fact You should be able to do all your buster testing without thinking much about the gradle plugin.
