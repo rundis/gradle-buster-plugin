@@ -23,23 +23,16 @@ class BusterTestTask extends DefaultTask {
         def stdOut = new ByteArrayOutputStream()
         def busterArgs = busterArgs()
 
-        try {
-            def execResult = project.exec {
-                executable "buster"
-                args = busterArgs
-                standardOutput = stdOut
-                ignoreExitValue = true
-            }
 
-            writeXmlReport(stdOut)
-            execResult.exitValue == 0 ? logResults() : logTestErrors()
-        } finally {
-            if(busterKillOnFail) {
-                busterKill()
-            }
+        def execResult = project.exec {
+            executable "buster"
+            args = busterArgs
+            standardOutput = stdOut
+            ignoreExitValue = true
         }
 
-
+        writeXmlReport(stdOut)
+        execResult.exitValue == 0 ? logResults() : logTestErrors()
     }
 
     private void setupReportDir() {
@@ -87,17 +80,5 @@ class BusterTestTask extends DefaultTask {
 
         throw new GradleException(errMsg)
     }
-
-    private void busterKill() {
-        if(Buster.instance.running) {
-            logger.info "Killing buster server due to test failure"
-            Buster.instance.stopServer()
-        }
-        if(Phantom.instance.running) {
-            logger.info "Killing phantom.js due to test failure"
-            Phantom.instance.stopServer()
-        }
-    }
-
 
 }
