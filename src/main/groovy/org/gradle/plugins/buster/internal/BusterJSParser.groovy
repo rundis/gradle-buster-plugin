@@ -1,7 +1,7 @@
 package org.gradle.plugins.buster.internal
 
 
-class BusterConfigParser {
+class BusterJSParser {
 
     static pattern = /(?s)[sources|src|tests|testHelpers|specHelpers|specs|libs|deps|resources]\s*:\s*\[(.*?)\]/
 

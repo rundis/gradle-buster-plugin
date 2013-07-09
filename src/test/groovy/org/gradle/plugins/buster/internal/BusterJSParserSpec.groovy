@@ -3,9 +3,9 @@ package org.gradle.plugins.buster.internal
 import spock.lang.Specification
 
 
-class BusterConfigParserSpec extends Specification {
+class BusterJSParserSpec extends Specification {
 
-    BusterConfigParser parser = new BusterConfigParser()
+    BusterJSParser parser = new BusterJSParser()
 
     def "parse handles super simple config"() {
         given:
