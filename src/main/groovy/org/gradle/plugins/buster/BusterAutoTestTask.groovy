@@ -2,7 +2,7 @@ package org.gradle.plugins.buster
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import org.gradle.plugins.buster.internal.BusterConfigParser
+import org.gradle.plugins.buster.internal.BusterJSParser
 import org.gradle.plugins.buster.internal.BusterWatcher
 
 class BusterAutoTestTask extends  DefaultTask {
@@ -12,12 +12,12 @@ class BusterAutoTestTask extends  DefaultTask {
     @TaskAction
     void test() {
         def busterJs = resolveBusterJs()
-        def globPatterns = new BusterConfigParser().parseGlobPatterns(busterJs.text)
+        def globPatterns = new BusterJSParser().parseGlobPatterns(busterJs.text)
 
 
         Closure listener = {kind, path ->
             project.logger.info("Starting testrun due to change in path: $path")
-            def busterConfig = project.convention.getPlugin(BusterPluginConvention).busterConfig
+            def busterConfig = project.buster
 
             def execResult = project.exec {
                 executable "buster"
@@ -31,10 +31,9 @@ class BusterAutoTestTask extends  DefaultTask {
 
 
     private File resolveBusterJs() {
-        def busterConfig = project.convention.getPlugin(BusterPluginConvention).busterConfig
         File defaultBuster =
             ["buster.js", "test/buster.js", "spec/buster.js"].collect{new File(project.projectDir, it)}.find{it.exists()}
-        File busterJsFile = busterConfig.configFile?: defaultBuster
+        File busterJsFile = project.buster.configFile?: defaultBuster
 
         if(!busterJsFile) {
             throw new IllegalArgumentException("No buster config file found and no config file specified in options")
@@ -46,6 +45,5 @@ class BusterAutoTestTask extends  DefaultTask {
 
         busterJsFile
     }
-
 
 }

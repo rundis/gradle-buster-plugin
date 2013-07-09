@@ -18,7 +18,7 @@ class StartBusterServerTask extends DefaultTask {
     @TaskAction
     void start() {
         logger.info "Starting buster server"
-        def busterConfig = project.convention.getPlugin(BusterPluginConvention).busterConfig
+        def busterConfig = project.buster
         Map cmdResult = buster.startServer(busterConfig)
         if(!cmdResult.ok) {
             throw new GradleException("Error starting Buster Server: $cmdResult.message")

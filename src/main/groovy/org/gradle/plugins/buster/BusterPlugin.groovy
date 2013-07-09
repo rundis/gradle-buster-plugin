@@ -5,6 +5,8 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.tasks.TaskState
+import org.gradle.plugins.buster.config.Browser
+import org.gradle.plugins.buster.config.BusterConfig
 import org.gradle.plugins.buster.internal.Buster
 import org.gradle.plugins.buster.internal.Phantom
 
@@ -13,8 +15,6 @@ class BusterPlugin implements Plugin<Project>{
 
     @Override
     void apply(Project project) {
-        project.convention.plugins.put 'buster', new BusterPluginConvention(project)
-
         project.tasks.create StartBusterServerTask.NAME, StartBusterServerTask
         project.tasks.create (StopBusterServerTask.NAME, StopBusterServerTask).dependsOn StopPhantomTask.NAME
         project.tasks.create (CapturePhantomTask.NAME, CapturePhantomTask).dependsOn StartBusterServerTask.NAME
@@ -22,7 +22,7 @@ class BusterPlugin implements Plugin<Project>{
         project.tasks.create (BusterTestTask.NAME, BusterTestTask)
                 .dependsOn(CapturePhantomTask.NAME)
                 .addShutdownHook {
-                    //println "Shutdown stuff... note will not play well with daemon"
+                    // println "Shutdown stuff... note will not play well with daemon"
                 }
         project.tasks.create (BusterAutoTestTask.NAME, BusterAutoTestTask).dependsOn CapturePhantomTask.NAME
 
@@ -40,5 +40,9 @@ class BusterPlugin implements Plugin<Project>{
             }
 
         }
+
+        project.extensions.create("buster", BusterConfig)
+        project.extensions.buster.extensions.browsers = project.container(Browser)
+
     }
 }

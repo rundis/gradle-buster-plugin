@@ -1,5 +1,7 @@
 package org.gradle.plugins.buster.internal
 
+import org.gradle.plugins.buster.config.BusterConfig
+
 @Singleton
 class Buster {
 

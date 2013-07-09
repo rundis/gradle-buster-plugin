@@ -15,7 +15,7 @@ configurations {
 }
 
 dependencies {
-	compile gradleApi(), 'net.sf.jpathwatch:jpathwatch:0.95'
+	compile gradleApi(), 'net.sf.jpathwatch:jpathwatch:0.95', 'org.seleniumhq.selenium:selenium-java:2.33.0'
 	groovy localGroovy()
 
 	testCompile 'org.spockframework:spock-core:0.7-groovy-1.8', 'cglib:cglib-nodep:2.2.2'

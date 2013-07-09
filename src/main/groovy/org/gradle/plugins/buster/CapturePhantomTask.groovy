@@ -25,7 +25,7 @@ class CapturePhantomTask extends DefaultTask {
         assert buster.running, "Buster server has not been started cannot capture Phantom"
 
         prepareForPhantomFile()
-        def busterConfig = project.convention.getPlugin(BusterPluginConvention).busterConfig
+        def busterConfig = project.extensions.buster
         phantom.createPhantomFile(busterConfig, phantomFile)
 
         logger.info "Starting phantom and capturing with buster server using: ${phantomFile.path}"

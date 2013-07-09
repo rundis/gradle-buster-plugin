@@ -45,7 +45,7 @@ class BusterTestTask extends DefaultTask {
     }
 
     private List busterArgs() {
-        def busterConfig = project.convention.getPlugin(BusterPluginConvention).busterConfig
+        def busterConfig = project.buster
         def busterArgs = ["test", "--reporter", "xml", "--server", "http://localhost:${busterConfig.port}"]
         if (busterConfig.configFile) {
             busterArgs += ["--config", busterConfig.configFile.absolutePath]
