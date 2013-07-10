@@ -1,25 +1,28 @@
 package org.gradle.plugins.buster.internal.browsercapture
 
 import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.phantomjs.PhantomJSDriver
+import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.safari.SafariDriver
 
 
 public enum SupportedBrowser {
-    FIREFOX('firefox', FirefoxDriver),
-    SAFARI('safari', SafariDriver)
+    FIREFOX('firefox', {new FirefoxDriver() }),
+    SAFARI('safari', {new SafariDriver() }),
+    PHANTOMJS('phantomjs', {new PhantomJSDriver(new DesiredCapabilities())})
 
     private final String shortName
-    private final Class driverClass
+    private final Closure driverCreate
 
 
-    private SupportedBrowser(String shortName, Class driverClass) {
+    private SupportedBrowser(String shortName, Closure driverCreate) {
         this.shortName = shortName
-        this.driverClass = driverClass
+        this.driverCreate = driverCreate
     }
 
     String getShortName() { shortName }
 
-    Class getDriverClass() { driverClass }
+    Closure getDriverCreate() { driverCreate }
 
     static SupportedBrowser fromShortName(String shortName) {
         assertValid(shortName)

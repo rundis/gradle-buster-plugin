@@ -8,45 +8,45 @@ import org.openqa.selenium.safari.SafariDriver
 import spock.lang.Specification
 
 
-class BrowsersSpec extends Specification {
+class BrowserCapturerSpec extends Specification {
 
     private static final String CAPTURE_URL = "http://localhost:1111/capture"
-    private Browsers browsers
+    private BrowserCapturer capturer
     private Logger loggerMock
 
     def setup() {
         loggerMock = Mock(Logger)
-        browsers = new Browsers(loggerMock)
+        capturer = new BrowserCapturer(loggerMock)
     }
 
 
     def "capture supported browser"() {
         given:
         def mockDriver = Mock(SafariDriver)
-        browsers.metaClass.createDriver = {SupportedBrowser browser -> mockDriver}
+        capturer.metaClass.createDriver = {SupportedBrowser browser -> mockDriver}
 
         when:
-        browsers.capture(createBrowsers(SAFARI), CAPTURE_URL)
+        capturer.capture(browsers(SAFARI), CAPTURE_URL)
 
         then:
         1 * mockDriver.get(CAPTURE_URL)
-        browsers.captures.size() == 1
-        browsers.captures[SAFARI] == mockDriver
+        capturer.captures.size() == 1
+        capturer.captures[SAFARI] == mockDriver
     }
 
     def "capture already captured, does nothing"() {
         given:
         def mockDriver = Mock(SafariDriver)
-        browsers.metaClass.createDriver = {SupportedBrowser browser -> mockDriver}
+        capturer.metaClass.createDriver = {SupportedBrowser browser -> mockDriver}
 
         when:
-        browsers.capture(createBrowsers(SAFARI), CAPTURE_URL)
+        capturer.capture(browsers(SAFARI), CAPTURE_URL)
 
         then:
         1 * mockDriver.get(_)
 
         when:
-        browsers.capture(createBrowsers(SAFARI), CAPTURE_URL)
+        capturer.capture(browsers(SAFARI), CAPTURE_URL)
 
         then:
         0 * mockDriver.get(_)
@@ -56,13 +56,13 @@ class BrowsersSpec extends Specification {
     def "capture swallows exceptions and logs errors"() {
         given:
         def mockDriver = Mock(SafariDriver)
-        browsers.metaClass.createDriver = {SupportedBrowser browser -> mockDriver}
+        capturer.metaClass.createDriver = {SupportedBrowser browser -> mockDriver}
         def ex = new RuntimeException("Something really bad happening on get")
 
         mockDriver.get(CAPTURE_URL) >> {throw ex}
 
         when:
-        browsers.capture(createBrowsers(SAFARI), CAPTURE_URL)
+        capturer.capture(browsers(SAFARI), CAPTURE_URL)
 
         then:
         1 * loggerMock.error(_, ex)
@@ -73,37 +73,37 @@ class BrowsersSpec extends Specification {
     def "shutdown browsers"() {
         given:
         def mockDriver = Mock(SafariDriver)
-        browsers.metaClass.createDriver = {SupportedBrowser browser -> mockDriver}
-        browsers.capture(createBrowsers(SAFARI, FIREFOX), CAPTURE_URL)
+        capturer.metaClass.createDriver = {SupportedBrowser browser -> mockDriver}
+        capturer.capture(browsers(SAFARI, FIREFOX), CAPTURE_URL)
 
         when:
-        browsers.shutdown()
+        capturer.shutdown()
 
         then:
         2 * mockDriver.quit()
-        browsers.captures.size() == 0
+        capturer.captures.size() == 0
     }
 
 
     def "Failure during shutdown logs errors"() {
         given:
         def mockDriver = Mock(SafariDriver)
-        browsers.metaClass.createDriver = {SupportedBrowser browser -> mockDriver}
-        browsers.capture(createBrowsers(SAFARI, FIREFOX), CAPTURE_URL)
+        capturer.metaClass.createDriver = {SupportedBrowser browser -> mockDriver}
+        capturer.capture(browsers(SAFARI, FIREFOX), CAPTURE_URL)
         def ex = new RuntimeException("Something really bad happening on get")
         mockDriver.quit() >> {throw ex}
 
 
         when:
-        browsers.shutdown()
+        capturer.shutdown()
 
         then:
-        2 * loggerMock.error(_, ex)
+        2 * loggerMock.info(_, ex)
     }
 
 
 
-    private Collection createBrowsers(SupportedBrowser ...supportedBrowsers) {
+    private Collection browsers(SupportedBrowser ...supportedBrowsers) {
         supportedBrowsers.collect {
             new Browser(it.shortName)
         }

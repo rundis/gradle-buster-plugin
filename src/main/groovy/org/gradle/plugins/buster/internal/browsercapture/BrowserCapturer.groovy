@@ -4,12 +4,12 @@ import org.gradle.api.logging.Logger
 import org.gradle.plugins.buster.config.Browser
 import org.openqa.selenium.WebDriver
 
-class Browsers {
+class BrowserCapturer {
     final Map<SupportedBrowser, WebDriver> captures = [:]
     final Logger logger
 
 
-    Browsers(Logger logger) {
+    BrowserCapturer(Logger logger) {
         this.logger = logger
     }
 
@@ -42,7 +42,7 @@ class Browsers {
     }
 
     private def createDriver(SupportedBrowser supportedBrowser) {
-        supportedBrowser.driverClass.newInstance()
+        supportedBrowser.driverCreate.call()
 
 
     }
@@ -52,7 +52,7 @@ class Browsers {
             try {
                 it.value.quit()
             } catch (Exception e ) {
-                logger.error("Error shutting down browser ${it.key.shortName}", e)
+                logger.info("Error shutting down browser ${it.key.shortName}", e)
             }
         }
         captures.clear()
