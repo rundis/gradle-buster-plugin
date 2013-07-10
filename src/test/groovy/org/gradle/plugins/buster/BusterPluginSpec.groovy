@@ -9,7 +9,7 @@ class BusterPluginSpec extends Specification {
 
 
     def "specifying simple properties"() {
-        given:
+        when:
         def aPort = 1112
         def busterJs = new File("buster.js")
         Project project = ProjectBuilder.builder().build().with {
@@ -22,7 +22,7 @@ class BusterPluginSpec extends Specification {
             it
         }
 
-        expect:
+        then:
         project.buster.with {
             port == aPort
             configFile == configFile
@@ -33,7 +33,7 @@ class BusterPluginSpec extends Specification {
 
 
     def "specifying browsers to capture"() {
-        given:
+        when:
         Project project = ProjectBuilder.builder().build().with {
             apply plugin: 'buster'
 
@@ -41,16 +41,32 @@ class BusterPluginSpec extends Specification {
                 browsers {
                     firefox
                     safari
-                    ie {remote = true}
                 }
             }
             it
         }
 
-        expect:
+        then:
         project.buster.browsers.firefox
-        project.buster.browsers.size() == 3
-        project.buster.browsers.ie.remote
+        project.buster.browsers.size() == 2
+    }
+
+    def "unknown browser throws exception"() {
+        when:
+        Project project = ProjectBuilder.builder().build().with {
+            apply plugin: 'buster'
+
+            buster {
+                browsers {
+                    myCustomBrowser
+                }
+            }
+            it
+        }
+
+        then:
+        Exception e = thrown()
+
     }
 
 

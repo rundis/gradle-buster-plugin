@@ -41,8 +41,6 @@ class BusterPlugin implements Plugin<Project>{
 
         }
 
-        project.extensions.create("buster", BusterConfig)
-        project.extensions.buster.extensions.browsers = project.container(Browser)
-
+        project.extensions.create("buster", BusterConfig, project)
     }
 }
