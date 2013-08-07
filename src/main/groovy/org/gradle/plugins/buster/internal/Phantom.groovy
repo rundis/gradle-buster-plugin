@@ -1,11 +1,5 @@
 package org.gradle.plugins.buster.internal
 
-import groovy.util.logging.Slf4j
-import org.hyperic.sigar.Sigar
-
-import static CommandUtil.executePiped
-
-
 @Singleton
 class Phantom {
     def PHANTOMJS_PROCESS_NAME = 'phantomjs'

@@ -1,6 +1,5 @@
 package org.gradle.plugins.buster.internal
 
-import groovy.util.logging.Slf4j
 import org.hyperic.sigar.Sigar
 import org.hyperic.sigar.SigarException
 
@@ -47,7 +46,6 @@ class Processes {
         } != null
     }
 
-    @Slf4j
     static class Natives {
         def unpackNativeLibraries() {
             def tempDirectory = createTempDirectory()
@@ -62,7 +60,6 @@ class Processes {
             }
 
             System.setProperty('org.hyperic.sigar.path', tempDirectory.absolutePath)
-            log.warn("###### ${tempDirectory}")
         }
 
         def createTempDirectory() {
