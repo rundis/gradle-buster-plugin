@@ -1,15 +1,21 @@
 package org.gradle.plugins.buster.internal
 
+import groovy.util.logging.Slf4j
+import org.hyperic.sigar.Sigar
+
 import static CommandUtil.executePiped
 
 
 @Singleton
 class Phantom {
+    def PHANTOMJS_PROCESS_NAME = 'phantomjs'
 
-    boolean isRunning() { pid }
+    boolean isRunning() {
+        Processes.instance.isRunning(PHANTOMJS_PROCESS_NAME)
+    }
 
     String getPid() {
-        executePiped "ps aux|grep phantomjs|head -1|awk {print\$2}"
+        Processes.instance.pidFor(PHANTOMJS_PROCESS_NAME)
     }
 
     Map capturePhantom(BusterConfig busterConfig, File phantomFile) {
@@ -23,8 +29,8 @@ class Phantom {
     }
 
     void stopServer() {
-        if(isRunning()) {
-            "kill -9 ${pid}".execute()
+        if (isRunning()) {
+            Processes.instance.kill(PHANTOMJS_PROCESS_NAME)
         }
     }
 
