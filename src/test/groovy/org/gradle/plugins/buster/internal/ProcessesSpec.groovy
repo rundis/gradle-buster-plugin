@@ -23,7 +23,7 @@ class ProcessesSpec extends Specification {
         when: 'killing the process'
         processes.kill(BUSTER_PROCESS_NAME)
 
-        then: 'the process should have exited'
+        then: 'the process should have exited within 1 second'
         new PollingConditions().within(1, {
             busterProcess.hasExited
         })
