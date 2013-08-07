@@ -16,8 +16,8 @@ class StopPhantomTask extends DefaultTask {
 
     @TaskAction
     void stop() {
-        logger.info("Stopping phantom")
+        logger.info "Stopping phantom with pid: ${phantom.pid}"
         phantom.stopServer()
-
+        assert !phantom.running, "Failed to stop PhantomJS"
     }
 }

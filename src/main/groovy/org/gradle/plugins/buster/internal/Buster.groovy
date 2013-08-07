@@ -2,11 +2,14 @@ package org.gradle.plugins.buster.internal
 
 @Singleton
 class Buster {
+    def BUSTER_PROCESS_NAME = 'buster-server'
 
-    boolean isRunning() { pid }
+    boolean isRunning() {
+        Processes.instance.isRunning(BUSTER_PROCESS_NAME)
+    }
 
     String getPid() {
-        org.gradle.plugins.buster.internal.CommandUtil.executePiped "ps aux|grep buster-server|grep node|awk {print\$2}"
+        Processes.instance.pidFor(BUSTER_PROCESS_NAME)
     }
 
     Map startServer(BusterConfig busterConfig) {
@@ -22,8 +25,8 @@ class Buster {
     }
 
     void stopServer() {
-        if(isRunning()) {
-            "kill -9 ${pid}".execute()
+        if (isRunning()) {
+            Processes.instance.kill(BUSTER_PROCESS_NAME)
         }
     }
 }
