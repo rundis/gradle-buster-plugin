@@ -115,7 +115,7 @@ The main culprit would be PhantomJS, that could be left running and the on subse
 ### Version history
 
 #### Upcoming (promiseware :-) )
-# Support for testing with multiple browsers using selenium to capture browsers
+* Support for testing with multiple browsers using selenium to capture browsers
 
 #### 0.1.1
 * Added incubating support for auto testing (Continuous testing)
