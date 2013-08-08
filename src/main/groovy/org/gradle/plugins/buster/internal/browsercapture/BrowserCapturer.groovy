@@ -31,6 +31,7 @@ class BrowserCapturer {
             captures[browser.supportedBrowser] = driver
 
             driver.get(captureUrl)
+
         } catch (Exception e) {
             logger.error("Error capturing ${browser.name}", e)
         }
