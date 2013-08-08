@@ -9,7 +9,7 @@ buildscript {
     }
     dependencies {
         //classpath 'org.gradle.buster:gradle-buster-plugin:0.1.0'
-        classpath files('../build/libs/gradle-buster-plugin-0.1.1.jar'),
+        classpath files('../build/libs/gradle-buster-plugin-0.2.0-SNAPSHOT.jar'),
                 'net.sf.jpathwatch:jpathwatch:0.95',
                 'org.seleniumhq.selenium:selenium-java:2.33.0',
                 'com.github.detro.ghostdriver:phantomjsdriver:1.0.3'
