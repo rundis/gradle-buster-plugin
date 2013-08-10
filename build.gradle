@@ -6,30 +6,43 @@ group = 'org.gradle.buster'
 version = '0.2.0-SNAPSHOT'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 
 configurations {
     sourceArchives
+    //all*.exclude group: 'log4j', module: 'log4j'
 }
 
 dependencies {
 
-	compile gradleApi(), localGroovy(),
+    compile gradleApi(), localGroovy(),
             'net.sf.jpathwatch:jpathwatch:0.95',
-            'org.seleniumhq.selenium:selenium-java:2.33.0',
-            'com.github.detro.ghostdriver:phantomjsdriver:1.0.3',
-	        'org.fusesource:sigar:1.6.4:native',
-            'org.fusesource:sigar:1.6.4'
 
-	testCompile 'org.spockframework:spock-core:0.7-groovy-1.8',
+
+
+            compile("com.github.detro.ghostdriver:phantomjsdriver:1.0.3") {
+                exclude group: "commons-logging", module: "commons-logging"
+            }
+    compile("org.seleniumhq.selenium:selenium-java:2.33.0") {
+        exclude group: "commons-logging", module: "commons-logging"
+    }
+    compile("org.fusesource:sigar:1.6.4:native") {
+        exclude group: "log4j", module: "log4j"
+    }
+    compile("org.fusesource:sigar:1.6.4") {
+        exclude group: "log4j", module: "log4j"
+    }
+
+
+    testCompile 'org.spockframework:spock-core:0.7-groovy-1.8',
             'cglib:cglib-nodep:2.2.2'
 
 }
 
-sourceCompatibility=1.6
-targetCompatibility=1.6
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
 
 
 task sourceJar(type: Jar) {
@@ -45,17 +58,38 @@ publishing {
             artifact sourceJar {
                 classifier "sources"
             }
+
+
+            // as of 1.6 publish doesn not respect excludes. Must add manually
+            pom.withXml {
+                asNode().dependencies[0].dependency.findAll { it.groupId[0].value()[0] == 'org.fusesource' }.each {
+                    it.children().last() + {
+                        resolveStrategy = Closure.DELEGATE_FIRST
+                        exclusions {
+                            exclusion {
+                                groupId 'log4j'
+                                artifactId 'log4j'
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
     }
-    repositories{
+    repositories {
         maven {
             url "https://api.bintray.com/maven/rundis/maven/gradle-buster-plugin"
-                    credentials {
-                        username = hasProperty('bintray_username') ? bintray_username : ''
-                        password = hasProperty('bintray_api_key') ? bintray_api_key : ''
-                    }
+            credentials {
+                username = hasProperty('bintray_username') ? bintray_username : ''
+                password = hasProperty('bintray_api_key') ? bintray_api_key : ''
+            }
         }
+    }
+
+    generatePomFileForMavenJavaPublication {
+        destination = file("$buildDir/generated-pom.xml")
     }
 }
 
