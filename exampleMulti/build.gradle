@@ -21,14 +21,16 @@ buildscript {
 
 subprojects {
     apply plugin: 'buster'
+    buster {
+        browsers {
+            phantomjs
+        }
+    }
 }
 
 project(':example2') {
     buster {
         configFile = file('config/buster.js')
-        browsers {
-            phantomjs
-        }
     }
 }
 

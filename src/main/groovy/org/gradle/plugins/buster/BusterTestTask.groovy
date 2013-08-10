@@ -3,6 +3,8 @@ package org.gradle.plugins.buster
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
+import org.gradle.plugins.buster.internal.BusterTestingService
+import org.gradle.process.ExecResult
 
 class BusterTestTask extends DefaultTask {
     static NAME = "busterTest"
@@ -10,26 +12,22 @@ class BusterTestTask extends DefaultTask {
     File reportsDir = new File(project.buildDir, "busterTest-results")
     File outputFile = new File(reportsDir.path, "bustertests.xml")
 
+    BusterTestingService service
 
-    boolean busterKillOnFail
 
+    protected BusterTestTask setService(BusterTestingService service) {
+        this.service = service
+        this
+    }
 
     @TaskAction
     void test() {
         setupReportDir()
 
-        def stdOut = new ByteArrayOutputStream()
-        def busterArgs = busterArgs()
+        service.prepareForTest()
+        ExecResult execResult = executeTests()
+        service.tearDownAfterTest()
 
-
-        def execResult = project.exec {
-            executable "buster"
-            args = busterArgs
-            standardOutput = stdOut
-            ignoreExitValue = true
-        }
-
-        writeXmlReport(stdOut)
         execResult.exitValue == 0 ? logResults() : logTestErrors()
     }
 
@@ -40,6 +38,20 @@ class BusterTestTask extends DefaultTask {
         if (outputFile.exists()) {
             outputFile.delete()
         }
+    }
+
+    private ExecResult executeTests() {
+        def stdOut = new ByteArrayOutputStream()
+        def busterArgs = busterArgs()
+        def execResult = project.exec {
+            executable "buster"
+            args = busterArgs
+            standardOutput = stdOut
+            ignoreExitValue = true
+        }
+
+        writeXmlReport(stdOut)
+        execResult
     }
 
     private List busterArgs() {

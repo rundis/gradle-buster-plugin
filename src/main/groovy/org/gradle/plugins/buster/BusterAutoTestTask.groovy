@@ -3,11 +3,19 @@ package org.gradle.plugins.buster
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.plugins.buster.internal.BusterJSParser
+import org.gradle.plugins.buster.internal.BusterTestingService
 import org.gradle.plugins.buster.internal.BusterWatcher
 
 class BusterAutoTestTask extends  DefaultTask {
     static NAME = "busterAutoTest"
 
+    protected BusterTestingService service
+
+
+    protected BusterAutoTestTask setService(BusterTestingService service) {
+        this.service = service
+        this
+    }
 
     @TaskAction
     void test() {
@@ -25,6 +33,9 @@ class BusterAutoTestTask extends  DefaultTask {
                 ignoreExitValue = true
             }
         }
+
+
+        service.prepareForTest()
 
         BusterWatcher.create(project, project.projectDir.absolutePath, globPatterns, listener).processEvents()
     }
