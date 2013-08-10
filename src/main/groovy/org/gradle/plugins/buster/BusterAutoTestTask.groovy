@@ -21,7 +21,7 @@ class BusterAutoTestTask extends  DefaultTask {
 
             def execResult = project.exec {
                 executable "buster"
-                args = ["test", "--reporter", "specification", "--server", "http://localhost:${busterConfig.port}", "--config", busterJs]
+                args = ["test", "--reporter", "specification", "--server", busterConfig.serverUrl, "--config", busterJs]
                 ignoreExitValue = true
             }
         }

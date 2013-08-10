@@ -21,4 +21,8 @@ class BusterConfig {
     String getCaptureUrl() {
         "http://localhost:${port}/capture"
     }
+
+    String getServerUrl() {
+        "http://localhost:${port}"
+    }
 }

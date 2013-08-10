@@ -3,8 +3,6 @@ package org.gradle.plugins.buster
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
-import org.gradle.plugins.buster.internal.Buster
-import org.gradle.plugins.buster.internal.Phantom
 
 class BusterTestTask extends DefaultTask {
     static NAME = "busterTest"
@@ -46,7 +44,7 @@ class BusterTestTask extends DefaultTask {
 
     private List busterArgs() {
         def busterConfig = project.buster
-        def busterArgs = ["test", "--reporter", "xml", "--server", "http://localhost:${busterConfig.port}"]
+        def busterArgs = ["test", "--reporter", "xml", "--server", busterConfig.serverUrl]
         if (busterConfig.configFile) {
             busterArgs += ["--config", busterConfig.configFile.absolutePath]
         }

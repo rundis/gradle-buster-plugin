@@ -4,7 +4,6 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.GradleBuild
 import org.gradle.plugins.buster.internal.Buster
-import org.gradle.plugins.buster.internal.Phantom
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
@@ -29,68 +28,44 @@ class BusterIntegrationSpec extends Specification {
     }
 
     def teardown() {
-        if(Buster.instance.running) {
+        if (Buster.instance.running) {
             Buster.instance.stopServer()
-        }
-        if(Phantom.instance.running) {
-            Phantom.instance.stopServer()
         }
 
     }
 
 
-    def "run tests and shut down phantom and buster after for single project"() {
+    def "run tests for single project"() {
         given:
         Project project = project(singleProjectDir)
         Task test = project.tasks["test"]
-        Task cleanUp = project.tasks["cleanUp"]
 
         when: "Running tests"
         test.execute()
 
-        then: "All tests are successfull and buster and phantom are left running"
-        Buster.instance.running
-        Phantom.instance.running
-
-        when: "Stopping buster server"
-        cleanUp.execute()
-
-        then: "Buster server and phantom are stopped"
+        then: "All tests are successfull and buster stopped"
         !Buster.instance.running
-        !Phantom.instance.running
-
     }
 
-    def "run tests and shut down phantom and buster after for multiproject"() {
+    def "run tests for multiproject"() {
         given:
         Project project = project(multiprojectBuildDir)
         Task test = project.tasks["test"]
-        Task cleanUp = project.tasks["cleanUp"]
 
         when: "Running tests"
         test.execute()
 
-        then: "All tests are successfull and buster and phantom are left running"
-        Buster.instance.running
-        Phantom.instance.running
-
-        when: "Stopping buster server"
-        cleanUp.execute()
-
-        then: "Buster server and phantom are stopped"
+        then: "All tests are successfull and buster stopped"
         !Buster.instance.running
-        !Phantom.instance.running
-
     }
 
-    def "run failing tests with killOnFailure set cleans up"() {
+    def "run failing tests with also cleans up"() {
         given:
         def project = ProjectBuilder.builder().build().with {
 
             task(type: GradleBuild, 'test') {
                 dir = exampleFailBuildDir.absolutePath
                 tasks = ['busterTest']
-                startParameter.projectProperties['busterKillOnFail']=true
             }
             it
         }
@@ -99,14 +74,10 @@ class BusterIntegrationSpec extends Specification {
 
         when:
         test.execute()
-        sleep(100)
-        then:
 
+        then:
         Exception ex = thrown()
         !Buster.instance.running
-        !Phantom.instance.running
-
-
     }
 
 
@@ -118,12 +89,6 @@ class BusterIntegrationSpec extends Specification {
                 dir = buildDir.absolutePath
                 tasks = ['busterTest']
             }
-
-            task(type: GradleBuild, 'cleanUp') {
-                dir = buildDir.absolutePath
-                tasks = ['stopBusterServer']
-            }
-
             it
         }
     }

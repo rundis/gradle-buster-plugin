@@ -1,12 +1,13 @@
 package org.gradle.plugins.buster
 
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.tasks.TaskState
 import org.gradle.plugins.buster.config.BusterConfig
 import org.gradle.plugins.buster.internal.Buster
-import org.gradle.plugins.buster.internal.Phantom
 import org.gradle.plugins.buster.internal.browsercapture.BrowserCapturer
 
 class BusterPlugin implements Plugin<Project>{
@@ -19,36 +20,57 @@ class BusterPlugin implements Plugin<Project>{
         this.project = project
         this.browserCapturer = new BrowserCapturer(project.logger)
 
-
-        project.tasks.create StartBusterServerTask.NAME, StartBusterServerTask
-        project.tasks.create (StopBusterServerTask.NAME, StopBusterServerTask).dependsOn StopPhantomTask.NAME
-        project.tasks.create (CapturePhantomTask.NAME, CapturePhantomTask).dependsOn StartBusterServerTask.NAME
-        project.tasks.create StopPhantomTask.NAME, StopPhantomTask
         project.tasks.create (BusterTestTask.NAME, BusterTestTask)
-                .dependsOn(CapturePhantomTask.NAME)
-                .mustRunAfter(CaptureBrowsersTask.NAME)
+
+        project.tasks.create (BusterAutoTestTask.NAME, BusterAutoTestTask)
                 .addShutdownHook {
-                    // TODO: Make me optional
+                    project.logger.info "Release captured browsers shutdownhook"
                     browserCapturer.shutdown()
                 }
-        project.tasks.create (BusterAutoTestTask.NAME, BusterAutoTestTask)
-                .dependsOn(CapturePhantomTask.NAME)
-                .mustRunAfter(CaptureBrowsersTask.NAME)
 
-        project.tasks.create (CaptureBrowsersTask.NAME, CaptureBrowsersTask)
-            .dependsOn(StartBusterServerTask.NAME)
-            .setBrowserCapturer(browserCapturer)
 
+        project.gradle.taskGraph.addTaskExecutionListener(new TaskExecutionListener() {
+            @Override
+            void beforeExecute(Task task) {
+                println "$project beforetaskListener ${task.name}"
+            }
+
+            @Override
+            void afterExecute(Task task, TaskState taskState) {
+                println "$project aftertaskListener ${task.name}"
+            }
+        })
+
+
+        project.gradle.taskGraph.beforeTask {Task task ->
+            println "Beforetask ${task.name}"
+            if(task.name in [BusterTestTask.NAME, BusterAutoTestTask.NAME]) {
+                println "About to start buster...."
+                if(Buster.instance.running) {
+                    throw new GradleException("There is already a running buster instance")
+                }
+                project.logger.info "Starting buster server"
+                BusterConfig busterConfig = project.extensions.buster
+                Map cmdResult = Buster.instance.startServer(busterConfig)
+                if(!cmdResult.ok) {
+                    throw new GradleException("Error starting Buster Server: $cmdResult.message")
+                }
+                project.logger.info cmdResult.message
+
+                project.logger.info "Capturing browsers"
+                browserCapturer.capture(busterConfig.browsers, busterConfig.captureUrl)
+            }
+
+        }
 
         project.gradle.taskGraph.afterTask {Task task, TaskState state ->
-            if(state.failure && task.name == BusterTestTask.NAME && task['busterKillOnFail']) {
+            println "aftertask ${task.name}"
+            if(task.name == BusterTestTask.NAME) {
+                project.logger.info "Releasing captured browsers"
+                browserCapturer.shutdown()
                 if(Buster.instance.running) {
-                    project.logger.info "Killing buster server due to test failure"
+                    project.logger.info "Stopping buster server"
                     Buster.instance.stopServer()
-                }
-                if(Phantom.instance.running) {
-                    project.logger.info "Killing phantom.js due to test failure"
-                    Phantom.instance.stopServer()
                 }
             }
 

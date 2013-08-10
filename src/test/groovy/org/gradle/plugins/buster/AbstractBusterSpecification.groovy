@@ -3,20 +3,17 @@ package org.gradle.plugins.buster
 import org.gradle.api.Project
 import org.gradle.plugins.buster.internal.Buster
 import org.gradle.plugins.buster.config.BusterConfig
-import org.gradle.plugins.buster.internal.Phantom
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
 abstract class AbstractBusterSpecification extends Specification {
     Project project
     Buster busterMock
-    Phantom phantomMock
     BusterConfig busterConfig
 
     def setup() {
         project = project()
         busterMock = Mock(Buster)
-        phantomMock = Mock(Phantom)
         busterConfig = project.extensions.buster
     }
 
