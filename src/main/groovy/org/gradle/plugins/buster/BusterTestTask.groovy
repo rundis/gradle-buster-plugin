@@ -1,10 +1,9 @@
 package org.gradle.plugins.buster
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
 import org.gradle.plugins.buster.internal.BusterTestingService
-import org.gradle.process.ExecResult
+import org.gradle.plugins.buster.internal.JUnitTestXml
 
 class BusterTestTask extends DefaultTask {
     static NAME = "busterTest"
@@ -25,10 +24,13 @@ class BusterTestTask extends DefaultTask {
         setupReportDir()
 
         service.prepareForTest()
-        ExecResult execResult = executeTests()
-        service.tearDownAfterTest()
 
-        execResult.exitValue == 0 ? logResults() : logTestErrors()
+        try {
+            executeTests()
+        } finally {
+            service.tearDownAfterTest()
+        }
+
     }
 
     private void setupReportDir() {
@@ -40,7 +42,7 @@ class BusterTestTask extends DefaultTask {
         }
     }
 
-    private ExecResult executeTests() {
+    private void executeTests() {
         def stdOut = new ByteArrayOutputStream()
         def busterArgs = busterArgs()
         def execResult = project.exec {
@@ -50,8 +52,11 @@ class BusterTestTask extends DefaultTask {
             ignoreExitValue = true
         }
 
-        writeXmlReport(stdOut)
-        execResult
+        new JUnitTestXml(stdOut.toString(), logger)
+                .writeFile(outputFile)
+                .validateNoErrors()
+                .logResults()
+
     }
 
     private List busterArgs() {
@@ -61,34 +66,6 @@ class BusterTestTask extends DefaultTask {
             busterArgs += ["--config", busterConfig.configFile.absolutePath]
         }
         busterArgs
-    }
-
-    private void writeXmlReport(OutputStream outXml) {
-        def testResults = outXml.toString()
-        if (!testResults.contains("xml")) {
-            throw new GradleException("Test execution failure: ${testResults}")
-        }
-        outputFile << testResults
-    }
-
-
-    private void logResults() {
-        def xml = new XmlSlurper().parse(outputFile)
-        xml.testsuite.each { suite ->
-            logger.info "Suite: ${suite.@name}, testcases: ${suite.testcase.size()}"
-        }
-    }
-
-    private void logTestErrors() {
-        def xml = new XmlSlurper().parse(outputFile)
-        def errMsg = "Test errors:\n\n" + xml.testsuite.findAll { it.@failures || it.@errors }.collect { suite ->
-            "Suite: ${suite.@name}, failures: ${suite.@failures}, errors: ${suite.@errors}"
-        }.join("\n")
-
-        logger.info "Test results:"
-        logger.info outputFile.text
-
-        throw new GradleException(errMsg)
     }
 
 }
