@@ -7,6 +7,7 @@ a smooth development cycle for you as a developer.
 _Big disclaimer: Will not run on Windows_
 
 
+
 ### Preconditions
 * [Gradle](http://www.gradle.org) 1.6 or higher
 * [NodeJS/npm](http://nodejs.org/) - Precondition for Buster.js. Gives you superfast javascript tests.
@@ -58,7 +59,7 @@ build.dependsOn busterTest // Optional, hook up the relevant buster tasks into y
 buster {
 	port = 1112 // override default of 1111 for buster, optional to specify
 	configFile = file('config/buster.js') /* If left out it will look in $project.projectDir/buster.js | $project.projectDir/test/buster.js | $project.projectDir/spec/buster.js */
-	browsers {
+	browsers {  // if you leave out this closure, phantomjs is default added to the browsers used for testing
 	    phantomjs
 	    firefox
 	    safari
@@ -66,7 +67,6 @@ buster {
 }
 ```
 
-Please note that in a multiproject setting, you are in trouble if you start setting up different ports for the buster server.
 
 #### More on browser configuration
 Browsers are captured using [Selenium](http://docs.seleniumhq.org/).
@@ -74,12 +74,17 @@ This opens up for some really powerful options for future versions of this plugi
 browsers on a remote machine (handy if you wish to test real browsers from your headless ci machine, or say you are on a nix system and need to test internet explorer).
 
 Currently only PhantomJs, Firefox, Safari(only mac) and Chrome are supported.
-Info about expected location for executables
-* (Chrome)[https://code.google.com/p/selenium/wiki/ChromeDriver#Requirements].
-* PhantomJs - Must be in path or set system property: phantomjs.binary.path
-* (Firefox)[https://code.google.com/p/selenium/wiki/FirefoxDriver#Important_System_Properties]
+Please keep in mind the expected location for executables
+* [Chrome](https://code.google.com/p/selenium/wiki/ChromeDriver#Requirements)
+* PhantomJs - Must be in path or set system property: `phantomjs.binary.path`
+* [Firefox](https://code.google.com/p/selenium/wiki/FirefoxDriver#Important_System_Properties)
 
 
+The chrome driver for selenium requires a separate platform dependent executable. This is setup for you automatically
+unless you specify the the system property : `webdriver.chrome.driver`.
+The executable will be installed to  `~/.gradle/browserdrivers/chrome/`
+
+So if you are happy with the defaults, all you have to do is specify which browsers you wish to test with.
 
 
 
@@ -87,6 +92,8 @@ Info about expected location for executables
 * busterTest : Will start a buster server, capture defined browsers, run the tests, shutdown browsers and stop the buster server
 * busterAutoTest : Run buster testing in continuous mode . Any changes/adds/deletes to files matching glob patterns in
 the buster.js configuration file will automatically trigger a buster test run. Also starts a buster server and captures browsers, before it starts listening for changes.
+* busterSetupWebDrivers : Used by the 2 above to do required driver setup on demand. If no setup is needed the task is skipped.
+
 
 
 #### busterTest
@@ -109,8 +116,30 @@ _busterTest does not yet support incremental builds_
 With the support for automatically capturing browsers and the autotest support, you might consider using the plugin
 for your local javascript tdd cycle as well.
 
+To setup up which browsers you whish to test on your machine you could use an [init script](http://www.gradle.org/docs/current/userguide/init_scripts.html).
+Example init.gradle:
+```groovy
+projectsEvaluated {
+	rootProject.allprojects {project ->
+		project.plugins.hasPlugin('buster') {
+			buster {
+				browsers {
+					phantomjs
+					chrome
+					safari
+					firefox
+				}
+			}
+		}
+	}
+}
+```
 
 
+### Limitations
+* Will not run on windows
+* Not tested with gradle daemon. Should work for busterTest, but busterAutoTest most likely will not cleanup until the daemon dies !
+* Running parallel builds with buster testing on your ci server could cause problems as the buster server process management doesn't handle more than one buster process at a time.
 
 
 ### Version history

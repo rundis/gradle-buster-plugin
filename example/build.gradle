@@ -27,7 +27,7 @@ buster {
     browsers {
         //safari
         //firefox
-        chrome
+        //chrome
         phantomjs
     }
 }
