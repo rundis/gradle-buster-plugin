@@ -73,7 +73,14 @@ Browsers are captured using [Selenium](http://docs.seleniumhq.org/).
 This opens up for some really powerful options for future versions of this plugin. Future versions of the plugin might support running
 browsers on a remote machine (handy if you wish to test real browsers from your headless ci machine, or say you are on a nix system and need to test internet explorer).
 
-Currently only PhantomJs, Firefox and Safari are supported. Support for chrome will be coming real soon.
+Currently only PhantomJs, Firefox, Safari(only mac) and Chrome are supported.
+Info about expected location for executables
+* (Chrome)[https://code.google.com/p/selenium/wiki/ChromeDriver#Requirements].
+* PhantomJs - Must be in path or set system property: phantomjs.binary.path
+* (Firefox)[https://code.google.com/p/selenium/wiki/FirefoxDriver#Important_System_Properties]
+
+
+
 
 
 ### Available tasks

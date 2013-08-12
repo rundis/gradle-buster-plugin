@@ -1,5 +1,6 @@
 package org.gradle.plugins.buster.internal.browsercapture
 
+import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.phantomjs.PhantomJSDriver
 import org.openqa.selenium.remote.DesiredCapabilities
@@ -9,7 +10,8 @@ import org.openqa.selenium.safari.SafariDriver
 public enum SupportedBrowser {
     FIREFOX('firefox', {new FirefoxDriver() }),
     SAFARI('safari', {new SafariDriver() }),
-    PHANTOMJS('phantomjs', {new PhantomJSDriver(new DesiredCapabilities())})
+    PHANTOMJS('phantomjs', {new PhantomJSDriver(new DesiredCapabilities())}),
+    CHROME('chrome', {new ChromeDriver()})
 
     private final String shortName
     private final Closure driverCreate
