@@ -121,7 +121,7 @@ Example init.gradle:
 ```groovy
 projectsEvaluated {
 	rootProject.allprojects {project ->
-		project.plugins.hasPlugin('buster') {
+		if(project.plugins.hasPlugin('buster')) {
 			buster {
 				browsers {
 					phantomjs

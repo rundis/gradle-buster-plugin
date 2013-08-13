@@ -1,9 +1,24 @@
+buildscript {
+    repositories {
+        maven { url 'http://jcenter.bintray.com' }
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.2'
+    }
+}
+apply plugin: 'bintray'
+
+
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
 description = 'Gradle Buster plugin for running busterjs tests'
 group = 'org.gradle.buster'
 version = '0.2.0'
+
+
+
+
 
 repositories {
     mavenCentral()
@@ -82,8 +97,8 @@ publishing {
         maven {
             url "https://api.bintray.com/maven/rundis/maven/gradle-buster-plugin"
             credentials {
-                username = hasProperty('bintray_username') ? bintray_username : ''
-                password = hasProperty('bintray_api_key') ? bintray_api_key : ''
+                username = "rundis" //hasProperty('bintray_username') ? bintray_username : ''
+                password = "f3715746e3b1d812d058105beadb9f4a393f58537cf5d7817ba3bf8033f9a3e1"//hasProperty('bintray_api_key') ? bintray_api_key : ''
             }
         }
     }
@@ -115,6 +130,23 @@ task integrationTest(type: Test) {
 }
 build.dependsOn integrationTest
 
+
+
+bintray {
+    user = hasProperty('bintray_username') ? bintray_username : ''
+    key = hasProperty('bintray_api_key') ? bintray_api_key : ''
+    configurations = ['archives']
+    publications = ['mavenJava']
+    pkg {
+        repo = 'maven'
+        userOrg = 'rundis' // an optional organization name when the repo belongs to one of the user's orgs
+        name = 'gradle-buster-plugin'
+        desc = 'Gradle plugin for running busterjs javascript tests'
+        licenses = ['BSD']
+        //labels = ['gear', 'gore', 'gorilla']
+    }
+    //dryRun = true // whether to run this as dry-run, without deploying
+}
 
 
 task wrapper(type: Wrapper) {
