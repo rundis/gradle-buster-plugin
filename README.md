@@ -144,8 +144,10 @@ projectsEvaluated {
 
 ### Version history
 
-#### Upcoming (promiseware :-) )
-* Support for testing with multiple browsers using selenium to capture browsers
+#### 0.2.0
+* Support for testing with multiple browsers
+* Improved process handling for spawned processes - contributions by [stigkj](https://github.com/stigkj)
+* *Breaking change*: Removed several tasks, and buster server always stopped (except for autotest of course)
 
 #### 0.1.1
 * Added incubating support for auto testing (Continuous testing)
