@@ -1,12 +1,17 @@
 package org.gradle.plugins.buster
 
 import org.gradle.api.Project
+import org.gradle.plugins.buster.config.BusterConfig
 import org.gradle.plugins.buster.internal.browsercapture.SupportedBrowser
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
 
 class BusterPluginSpec extends Specification {
+
+    def cleanup() {
+        System.setProperty(BusterConfig.BUSTER_EXECUTABLES_SYS_PROP, "")
+    }
 
 
     def "specifying simple properties"() {
@@ -60,8 +65,6 @@ class BusterPluginSpec extends Specification {
             it
         }
 
-        println project.buster.browsers
-
         then:
         project.buster.browsers[SupportedBrowser.PHANTOMJS.shortName]
     }
@@ -82,7 +85,51 @@ class BusterPluginSpec extends Specification {
 
         then:
         Exception e = thrown()
+    }
 
+    def "buster executables path specified"() {
+        given:
+        String path = "myPath/subPath"
+
+        when:
+        Project project = ProjectBuilder.builder().build().with {
+            apply plugin: 'buster'
+
+            buster {
+                busterExecutablesPath = path
+            }
+            it
+        }
+
+        println project.buster
+
+        then:
+        project.buster.testExecutablePath == "${path}/buster-test"
+        project.buster.serverExecutablePath == "${path}/buster-server"
+    }
+
+    def "buster executables system property set"() {
+        given:
+        String path = "myPath/subPath"
+        String systemPropPath = "otherPath/dufus"
+        System.setProperty(BusterConfig.BUSTER_EXECUTABLES_SYS_PROP, systemPropPath)
+
+
+        when:
+        Project project = ProjectBuilder.builder().build().with {
+            apply plugin: 'buster'
+
+            buster {
+                busterExecutablesPath = path
+            }
+            it
+        }
+
+        println project.buster
+
+        then:
+        project.buster.testExecutablePath == "${systemPropPath}/buster-test"
+        project.buster.serverExecutablePath == "${systemPropPath}/buster-server"
     }
 
 

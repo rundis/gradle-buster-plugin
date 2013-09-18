@@ -6,9 +6,12 @@ import org.gradle.plugins.buster.internal.browsercapture.SupportedBrowser
 
 class BusterConfig {
     static final DEFAULT_BUSTER_PORT = 1111
+    static final BUSTER_EXECUTABLES_SYS_PROP = 'buster.executables.path'
 
     Integer port = DEFAULT_BUSTER_PORT
     File configFile
+    String busterExecutablesPath
+
     NamedDomainObjectCollection<Browser> browsers
 
     BusterConfig(Project project) {
@@ -28,4 +31,21 @@ class BusterConfig {
     String getServerUrl() {
         "http://localhost:${port}"
     }
+
+    String getTestExecutablePath() {
+        "${executablesPath()}buster-test"
+    }
+
+    String getServerExecutablePath() {
+        "${executablesPath()}buster-server"
+    }
+
+    private String executablesPath() {
+        String path = System.getProperty(BUSTER_EXECUTABLES_SYS_PROP) ?: busterExecutablesPath?: ""
+        path ? "${path}/" : ""
+    }
+
+
+
+
 }

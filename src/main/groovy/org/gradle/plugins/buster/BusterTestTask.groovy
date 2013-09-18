@@ -46,7 +46,7 @@ class BusterTestTask extends DefaultTask {
         def stdOut = new ByteArrayOutputStream()
         def busterArgs = busterArgs()
         def execResult = project.exec {
-            executable "buster"
+            executable project.buster.testExecutablePath
             args = busterArgs
             standardOutput = stdOut
             ignoreExitValue = true
@@ -61,7 +61,7 @@ class BusterTestTask extends DefaultTask {
 
     private List busterArgs() {
         def busterConfig = project.buster
-        def busterArgs = ["test", "--reporter", "xml", "--server", busterConfig.serverUrl]
+        def busterArgs = ["--reporter", "xml", "--server", busterConfig.serverUrl]
         if (busterConfig.configFile) {
             busterArgs += ["--config", busterConfig.configFile.absolutePath]
         }

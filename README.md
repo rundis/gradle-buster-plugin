@@ -59,6 +59,7 @@ build.dependsOn busterTest // Optional, hook up the relevant buster tasks into y
 buster {
 	port = 1112 // override default of 1111 for buster, optional to specify
 	configFile = file('config/buster.js') /* If left out it will look in $project.projectDir/buster.js | $project.projectDir/test/buster.js | $project.projectDir/spec/buster.js */
+	busterExecutablesPath = "node_modules/buster/bin" // Optional, if specified will prepend.
 	browsers {  // if you leave out this closure, phantomjs is default added to the browsers used for testing
 	    phantomjs
 	    firefox
@@ -66,6 +67,9 @@ buster {
 	}
 }
 ```
+
+You can also set buster executable path by specifying a system property (`-Dbuster.executables.path=node_modules/buster/bin`). This overrides the configuration setting busterExecutablesPath
+
 
 
 #### More on browser configuration
@@ -143,6 +147,10 @@ projectsEvaluated {
 
 
 ### Version history
+
+#### 0.2.1
+* Support for buster 0.7.5+
+* Support setting path to buster executables
 
 #### 0.2.0
 * Support for testing with multiple browsers

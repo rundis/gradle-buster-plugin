@@ -14,9 +14,7 @@ apply plugin: 'maven-publish'
 
 description = 'Gradle Buster plugin for running busterjs tests'
 group = 'org.gradle.buster'
-version = '0.2.0'
-
-
+version = '0.2.1'
 
 
 
@@ -75,7 +73,7 @@ publishing {
             }
 
 
-            // as of 1.6 publish doesn not respect excludes. Must add manually
+            // as of 1.6 publish does not respect excludes. Must add manually
             pom.withXml {
                 asNode().dependencies[0].dependency.findAll { it.groupId[0].value()[0] == 'org.fusesource' }.each {
                     it.children().last() + {

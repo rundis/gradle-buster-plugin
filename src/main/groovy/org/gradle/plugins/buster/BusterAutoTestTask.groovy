@@ -28,8 +28,8 @@ class BusterAutoTestTask extends  DefaultTask {
             def busterConfig = project.buster
 
             def execResult = project.exec {
-                executable "buster"
-                args = ["test", "--reporter", "specification", "--server", busterConfig.serverUrl, "--config", busterJs]
+                executable busterConfig.testExecutablePath
+                args = ["--reporter", "specification", "--server", busterConfig.serverUrl, "--config", busterJs]
                 ignoreExitValue = true
             }
         }
