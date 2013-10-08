@@ -42,16 +42,10 @@ class BusterAutoTestTask extends  DefaultTask {
 
 
     private File resolveBusterJs() {
-        File defaultBuster =
-            ["buster.js", "test/buster.js", "spec/buster.js"].collect{new File(project.projectDir, it)}.find{it.exists()}
-        File busterJsFile = project.buster.configFile?: defaultBuster
+        File busterJsFile = project.buster.resolveConfigFile(project)
 
         if(!busterJsFile) {
-            throw new IllegalArgumentException("No buster config file found and no config file specified in options")
-        }
-
-        if(!busterJsFile.exists()) {
-            throw new IllegalArgumentException("Config file for buster ${busterJsFile.absolutePath} could not be found")
+            throw new IllegalArgumentException("No default buster config file found and no config file specified in options")
         }
 
         busterJsFile

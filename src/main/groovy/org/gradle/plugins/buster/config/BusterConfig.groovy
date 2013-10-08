@@ -45,7 +45,11 @@ class BusterConfig {
         path ? "${path}/" : ""
     }
 
-
+    File resolveConfigFile(Project project) {
+        File defaultBuster =
+                ["buster.js", "test/buster.js", "spec/buster.js"].collect{new File(project.projectDir, it)}.find{it.exists()}
+        configFile?: defaultBuster
+    }
 
 
 }

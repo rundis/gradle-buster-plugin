@@ -1,7 +1,10 @@
 package org.gradle.plugins.buster
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import org.gradle.plugins.buster.internal.BusterJSParser
 import org.gradle.plugins.buster.internal.BusterTestingService
 import org.gradle.plugins.buster.internal.JUnitTestXml
 
@@ -9,6 +12,8 @@ class BusterTestTask extends DefaultTask {
     static NAME = "busterTest"
 
     File reportsDir = new File(project.buildDir, "busterTest-results")
+
+    @OutputFile
     File outputFile = new File(reportsDir.path, "bustertests.xml")
 
     BusterTestingService service
@@ -17,6 +22,24 @@ class BusterTestTask extends DefaultTask {
     protected BusterTestTask setService(BusterTestingService service) {
         this.service = service
         this
+    }
+
+    @InputFiles
+    public List<File> getInputFiles() {
+        File configFile = project.buster.resolveConfigFile(project)
+
+        if(!configFile) {
+            project.logger.warn("No buster config file (found), unable to determine inputs for task")
+            return []
+        }
+
+        def config = configFile.text
+        def jsFilesGlobs = new BusterJSParser().parseGlobPatterns(config)
+
+        project.files(configFile,
+                project.fileTree (dir: configFile.parent, include: jsFilesGlobs)
+        ).files.collect{it}
+
     }
 
     @TaskAction
