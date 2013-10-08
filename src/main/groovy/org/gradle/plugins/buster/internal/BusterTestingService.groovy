@@ -1,15 +1,15 @@
 package org.gradle.plugins.buster.internal
 
-import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.plugins.buster.config.BusterConfig
 import org.gradle.plugins.buster.internal.browsercapture.BrowserCapturer
+import org.gradle.plugins.buster.internal.process.BusterServer
 
 class BusterTestingService {
     BrowserCapturer browserCapturer
-    Buster buster
     Project project
+    private BusterServer busterServer
 
 
     void prepareForTest() {
@@ -23,16 +23,9 @@ class BusterTestingService {
     }
 
     private void startBuster() {
-        if (buster.running) {
-            throw new GradleException("There is already a running buster instance")
-        }
-
         logger.info "Starting buster server"
-        Map cmdResult = buster.startServer(busterConfig)
-        if (!cmdResult.ok) {
-            throw new GradleException("Error starting Buster Server: $cmdResult.message")
-        }
-        project.logger.info cmdResult.message
+        busterServer = BusterServer.start(busterConfig)
+        project.logger.info "Buster server started on port: $busterConfig.port"
     }
 
     private void captureBrowsers() {
@@ -43,7 +36,7 @@ class BusterTestingService {
 
     private void stopBuster() {
         project.logger.info "Stopping buster server"
-        buster.stopServer()
+        busterServer?.stop()
     }
 
     private void shutdownBrowsers() {

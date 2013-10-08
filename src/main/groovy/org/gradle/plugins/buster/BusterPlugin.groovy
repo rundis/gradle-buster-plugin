@@ -3,9 +3,8 @@ package org.gradle.plugins.buster
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.plugins.buster.config.BusterConfig
-import org.gradle.plugins.buster.internal.Buster
 import org.gradle.plugins.buster.internal.BusterTestingService
-import org.gradle.plugins.buster.internal.Processes
+import org.gradle.plugins.buster.internal.process.Processes
 import org.gradle.plugins.buster.internal.browsercapture.BrowserCapturer
 import org.gradle.plugins.buster.internal.browsercapture.BrowserDriverUtil
 
@@ -17,8 +16,7 @@ class BusterPlugin implements Plugin<Project>{
     void apply(Project project) {
         this.busterService = new BusterTestingService(
                 browserCapturer: new BrowserCapturer(project.logger),
-                project: project,
-                buster: Buster.instance
+                project: project
         )
 
         project.tasks.create (BusterSetupWebDriversTask.NAME, BusterSetupWebDriversTask)

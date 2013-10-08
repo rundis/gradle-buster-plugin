@@ -3,7 +3,7 @@ package org.gradle.plugins.buster
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.GradleBuild
-import org.gradle.plugins.buster.internal.Buster
+import org.gradle.plugins.buster.internal.process.BusterHelper
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
@@ -28,8 +28,8 @@ class BusterIntegrationSpec extends Specification {
     }
 
     def teardown() {
-        if (Buster.instance.running) {
-            Buster.instance.stopServer()
+        if (BusterHelper.running) {
+            BusterHelper.stopServer()
         }
 
     }
@@ -44,7 +44,7 @@ class BusterIntegrationSpec extends Specification {
         test.execute()
 
         then: "All tests are successfull and buster stopped"
-        !Buster.instance.running
+        !BusterHelper.running
     }
 
     def "run tests for multiproject"() {
@@ -56,7 +56,7 @@ class BusterIntegrationSpec extends Specification {
         test.execute()
 
         then: "All tests are successfull and buster stopped"
-        !Buster.instance.running
+        !BusterHelper.running
     }
 
     def "run failing tests with also cleans up"() {
@@ -77,7 +77,7 @@ class BusterIntegrationSpec extends Specification {
 
         then:
         Exception ex = thrown()
-        !Buster.instance.running
+        !BusterHelper.running
     }
 
 

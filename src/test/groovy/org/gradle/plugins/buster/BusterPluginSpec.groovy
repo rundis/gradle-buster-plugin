@@ -33,9 +33,25 @@ class BusterPluginSpec extends Specification {
             port == aPort
             configFile == configFile
         }
+    }
 
+    def "dynamically assign port"() {
+        when:
+        Project project = ProjectBuilder.builder().build().with {
+            apply plugin: 'buster'
+
+            buster {
+                port = new ServerSocket(0).getLocalPort()
+
+            }
+            it
+        }
+
+        then:
+        project.buster.port > 0
 
     }
+
 
 
     def "specifying browsers to capture"() {
@@ -131,6 +147,8 @@ class BusterPluginSpec extends Specification {
         project.buster.testExecutablePath == "${systemPropPath}/buster-test"
         project.buster.serverExecutablePath == "${systemPropPath}/buster-server"
     }
+
+
 
 
 
