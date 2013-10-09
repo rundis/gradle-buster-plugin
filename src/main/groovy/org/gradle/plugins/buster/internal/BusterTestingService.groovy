@@ -35,11 +35,13 @@ class BusterTestingService {
 
 
     private void stopBuster() {
+        if(!busterServer || busterServer.stopped) return
         project.logger.info "Stopping buster server"
         busterServer?.stop()
     }
 
     private void shutdownBrowsers() {
+        if(!browserCapturer.captures) return
         project.logger.info "Releasing captured browsers"
         browserCapturer.shutdown()
     }

@@ -14,7 +14,7 @@ class GlobMatcherSpec extends Specification {
     @Unroll("#path")
     def "matches if any glob mattern matches"() {
         given:
-        def matcher = globMatcher(["*.jsf", "**/*.js", "lib/**/*.txt"])
+        def matcher = globMatcher([[rootPath:"", includes:["*.jsf", "**/*.js", "lib/**/*.txt"]]])
 
         expect:
         matcher.matches(path) == matches
@@ -34,7 +34,7 @@ class GlobMatcherSpec extends Specification {
 
     def "handles double star like node.js glob matching does"() {
         given:
-        def matcher = globMatcher(["lib/**/*.js"])
+        def matcher = globMatcher([[rootPath:"", includes: ["lib/**/*.js"]]])
 
         expect:
         matcher.matches("lib/dill.js")
@@ -44,14 +44,15 @@ class GlobMatcherSpec extends Specification {
 
     def "adds pathseparator to end if not given"() {
         given:
-        def matcher = new GlobMatcher("/usr/local/project/dill", ["**/*.js"])
+        def matcher = new GlobMatcher("/usr/local/project/dill", [[rootPath: "", includes:["**/*.js"]]])
 
         expect:
         matcher.rootPath == "/usr/local/project/dill/"
     }
 
 
-    private GlobMatcher globMatcher(List globPatterns) {
+
+    private GlobMatcher globMatcher(List<Map> globPatterns) {
         new GlobMatcher(ROOTPATH, globPatterns)
     }
 }

@@ -34,12 +34,16 @@ class BusterTestTask extends DefaultTask {
         }
 
         def config = configFile.text
-        def jsFilesGlobs = new BusterJSParser().parseGlobPatterns(config)
+        def globPatterns = new BusterJSParser().extractGlobPatterns(config)
 
-        project.files(configFile,
-                project.fileTree (dir: configFile.parent, include: jsFilesGlobs)
-        ).files.collect{it}
 
+        def jsFiles = globPatterns.collect{
+            project.fileTree (dir: "${configFile.parent}/${it.rootPath}", include: it.includes, excludes: it.excludes)
+        }
+
+        def inputFiles = project.files(configFile, jsFiles).files.collect{it}
+        project.logger.debug("Incremental check inputfiles: $inputFiles")
+        inputFiles
     }
 
     @TaskAction

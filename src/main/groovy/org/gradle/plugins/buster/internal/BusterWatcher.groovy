@@ -25,7 +25,7 @@ class BusterWatcher {
     }
 
 
-    static BusterWatcher create(Project project, String rootPath, ArrayList<String> globPatterns, Closure pathEventListener) {
+    static BusterWatcher create(Project project, String rootPath, List<Map> globPatterns, Closure pathEventListener) {
         try {
             GlobMatcher globMatcher = new GlobMatcher(rootPath, globPatterns)
             BusterWatcher busterWatcher = new BusterWatcher(project, pathEventListener, globMatcher)

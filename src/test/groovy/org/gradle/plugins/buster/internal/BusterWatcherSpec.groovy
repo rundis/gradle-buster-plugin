@@ -21,7 +21,7 @@ class BusterWatcherSpec extends Specification {
         def testRootPath = new File("example").absolutePath
         def listener = {event, path -> println "Hello"}
         def project = project()
-        def watcher = BusterWatcher.create(project, testRootPath, ['*.js'], listener)
+        def watcher = BusterWatcher.create(project, testRootPath, [[rootPath: "", includes:['*.js']]], listener)
 
         expect:
         watcher.keys.values().contains(Paths.get(testRootPath))
@@ -43,7 +43,7 @@ class BusterWatcherSpec extends Specification {
         Future future = service.submit(new Runnable() {
             @Override
             void run() {
-                BusterWatcher.create(project, testRootPath.absolutePath, ['*.*'], listener).processEvents()
+                BusterWatcher.create(project, testRootPath.absolutePath, [[rootPath: "", includes:['*.*']]], listener).processEvents()
             }
         })
         sleep(100)
@@ -77,7 +77,7 @@ class BusterWatcherSpec extends Specification {
         Future future = service.submit(new Runnable() {
             @Override
             void run() {
-                BusterWatcher.create(project, testRootPath.absolutePath, ['**'], listener).processEvents()
+                BusterWatcher.create(project, testRootPath.absolutePath, [[rootPath: "", includes:['**']]], listener).processEvents()
             }
         })
         sleep(100)

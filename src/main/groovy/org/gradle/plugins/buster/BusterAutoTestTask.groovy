@@ -20,7 +20,7 @@ class BusterAutoTestTask extends  DefaultTask {
     @TaskAction
     void test() {
         def busterJs = resolveBusterJs()
-        def globPatterns = new BusterJSParser().parseGlobPatterns(busterJs.text)
+        def globPatterns = new BusterJSParser().extractGlobPatterns(busterJs.text)
 
 
         Closure listener = {kind, path ->

@@ -117,7 +117,6 @@ class BusterPluginSpec extends Specification {
             it
         }
 
-        println project.buster
 
         then:
         project.buster.testExecutablePath == "${path}/buster-test"
@@ -141,7 +140,6 @@ class BusterPluginSpec extends Specification {
             it
         }
 
-        println project.buster
 
         then:
         project.buster.testExecutablePath == "${systemPropPath}/buster-test"
