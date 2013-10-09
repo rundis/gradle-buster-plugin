@@ -98,7 +98,6 @@ class BusterWatcherSpec extends Specification {
     }
 
 
-
     private Project project() {
         ProjectBuilder.builder().build().with {
             apply plugin: 'buster'
