@@ -57,7 +57,7 @@ build.dependsOn busterTest // Optional, hook up the relevant buster tasks into y
 ### Configuration options
 ```groovy
 buster {
-	port = 1112 // override default of 1111 for buster, optional to specify
+	port = 1112 // override default of 1111 for buster, optional to specify.
 	configFile = file('config/buster.js') /* If left out it will look in $project.projectDir/buster.js | $project.projectDir/test/buster.js | $project.projectDir/spec/buster.js */
 	busterExecutablesPath = "node_modules/buster/bin" // Optional, if specified will prepend.
 	browsers {  // if you leave out this closure, phantomjs is default added to the browsers used for testing
@@ -70,6 +70,13 @@ buster {
 
 You can also set buster executable path by specifying a system property (`-Dbuster.executables.path=node_modules/buster/bin`). This overrides the configuration setting busterExecutablesPath
 
+In a ci environment with multiple potentially concurrent builds, you might want to dynamically asign ports.
+A simple solution would be along the lines of
+```groovy
+buster {
+    port = new ServerSocket(0).localPort
+}
+```
 
 
 #### More on browser configuration
@@ -93,7 +100,7 @@ So if you are happy with the defaults, all you have to do is specify which brows
 
 
 ### Available tasks
-* busterTest : Will start a buster server, capture defined browsers, run the tests, shutdown browsers and stop the buster server
+* busterTest : Will start a buster server, capture defined browsers, run the tests, shutdown browsers and stop the buster server.
 * busterAutoTest : Run buster testing in continuous mode . Any changes/adds/deletes to files matching glob patterns in
 the buster.js configuration file will automatically trigger a buster test run. Also starts a buster server and captures browsers, before it starts listening for changes.
 * busterSetupWebDrivers : Used by the 2 above to do required driver setup on demand. If no setup is needed the task is skipped.
@@ -101,7 +108,13 @@ the buster.js configuration file will automatically trigger a buster test run. A
 
 
 #### busterTest
-_busterTest does not yet support incremental builds_
+This task has incremental support.
+
+* Defined inputs: buster configuration file, and any matching files defined within the buster configuration file
+* Defined outputs: test report xml file
+
+_Please note that extracting globs from the buster configuration file does not support very complex config definitions.
+It doesn't separate between configuration groups or take config group inheritance into account._
 
 
 #### busterAutoTest
@@ -114,7 +127,7 @@ _busterTest does not yet support incremental builds_
 #### As part of a CI build
 * You would typically either 
 	* hook up the relevant gradle tasks as dependencies in your build task graph (as shown in the top)
-	* or specify gradle busterTestin a gradle build step in your build server config
+	* or specify gradle busterTest in a gradle build step in your build server config
 
 #### Local development
 With the support for automatically capturing browsers and the autotest support, you might consider using the plugin
@@ -143,10 +156,14 @@ projectsEvaluated {
 ### Limitations
 * Will not run on windows
 * Not tested with gradle daemon. Should work for busterTest, but busterAutoTest most likely will not cleanup until the daemon dies !
-* Running parallel builds with buster testing on your ci server could cause problems as the buster server process management doesn't handle more than one buster process at a time.
 
 
 ### Version history
+
+#### 0.2.2
+* Refactor buster-server process handling to allow running concurrent builds for same user 
+* Added incremental support to busterTest task
+
 
 #### 0.2.1
 * Support for buster 0.7.5+
