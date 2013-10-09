@@ -14,7 +14,7 @@ apply plugin: 'maven-publish'
 
 description = 'Gradle Buster plugin for running busterjs tests'
 group = 'org.gradle.buster'
-version = '0.2.1'
+version = '0.2.2'
 
 
 
@@ -31,13 +31,11 @@ configurations {
 dependencies {
 
     compile gradleApi(), localGroovy(),
-            'net.sf.jpathwatch:jpathwatch:0.95',
+            'net.sf.jpathwatch:jpathwatch:0.95'
 
-
-
-            compile("com.github.detro.ghostdriver:phantomjsdriver:1.0.3") {
-                exclude group: "commons-logging", module: "commons-logging"
-            }
+    compile("com.github.detro.ghostdriver:phantomjsdriver:1.0.3") {
+        exclude group: "commons-logging", module: "commons-logging"
+    }
     compile("org.seleniumhq.selenium:selenium-java:2.33.0") {
         exclude group: "commons-logging", module: "commons-logging"
     }
