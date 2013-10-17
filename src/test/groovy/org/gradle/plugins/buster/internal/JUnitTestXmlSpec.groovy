@@ -20,7 +20,7 @@ class JUnitTestXmlSpec extends Specification {
         xml                  | errContains
         null                 | "Empty"
         "No slaves captured" | "No slaves captured"
-        "<xml><body></xml>"  | "must be terminated by"
+        "<xml><body></xml>"  | "Invalid test xml"
     }
 
     def "xml with no error validates fine"() {

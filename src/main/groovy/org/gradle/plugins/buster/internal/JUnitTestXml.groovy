@@ -17,7 +17,12 @@ class JUnitTestXml {
         }
 
         this.xml = xml
-        this.gPath = new XmlSlurper().parseText(xml)
+
+        try {
+            this.gPath = new XmlSlurper().parseText(xml)
+        } catch (Exception e) {
+            throw new GradleException("Invalid test xml:\n${xml}", e)
+        }
         this.logger = logger
     }
 
