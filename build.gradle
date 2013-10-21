@@ -33,7 +33,7 @@ dependencies {
     compile gradleApi(), localGroovy(),
             'net.sf.jpathwatch:jpathwatch:0.95'
 
-    compile("com.github.detro.ghostdriver:phantomjsdriver:1.0.3") {
+    compile("com.github.detro.ghostdriver:phantomjsdriver:1.0.4") {
         exclude group: "commons-logging", module: "commons-logging"
     }
     compile("org.seleniumhq.selenium:selenium-java:2.33.0") {

@@ -2,6 +2,7 @@ package org.gradle.plugins.buster
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.logging.LogLevel
 import org.gradle.plugins.buster.config.BusterConfig
 import org.gradle.plugins.buster.internal.BusterTestingService
 import org.gradle.plugins.buster.internal.process.Processes
@@ -26,6 +27,7 @@ class BusterPlugin implements Plugin<Project>{
         project.tasks.create (BusterTestTask.NAME, BusterTestTask)
                 .setService(busterService)
                 .dependsOn(BusterSetupWebDriversTask.NAME)
+                .logging.captureStandardError(LogLevel.INFO)
 
 
         Processes.instance // need to access so that shutdown hook don't go apeshit

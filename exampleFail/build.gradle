@@ -8,7 +8,7 @@ buildscript {
         classpath files('../build/libs/gradle-buster-plugin-0.2.2.jar'),
                 'net.sf.jpathwatch:jpathwatch:0.95',
                 'org.seleniumhq.selenium:selenium-java:2.33.0',
-                'com.github.detro.ghostdriver:phantomjsdriver:1.0.3',
+                'com.github.detro.ghostdriver:phantomjsdriver:1.0.4',
                 'org.fusesource:sigar:1.6.4:native',
                 'org.fusesource:sigar:1.6.4'
     }
