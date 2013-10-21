@@ -28,8 +28,6 @@ class BusterPlugin implements Plugin<Project>{
                 .dependsOn(BusterSetupWebDriversTask.NAME)
 
 
-
-
         Processes.instance // need to access so that shutdown hook don't go apeshit
         project.tasks.create (BusterAutoTestTask.NAME, BusterAutoTestTask)
                 .setService(busterService)

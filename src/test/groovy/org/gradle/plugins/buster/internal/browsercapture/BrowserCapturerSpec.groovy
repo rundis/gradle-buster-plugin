@@ -1,5 +1,7 @@
 package org.gradle.plugins.buster.internal.browsercapture
 
+import org.gradle.api.logging.LogLevel
+import org.gradle.api.logging.LoggingManager
 import org.gradle.plugins.buster.config.Browser
 
 import static org.gradle.plugins.buster.internal.browsercapture.SupportedBrowser.*
@@ -13,6 +15,7 @@ class BrowserCapturerSpec extends Specification {
     private static final String CAPTURE_URL = "http://localhost:1111/capture"
     private BrowserCapturer capturer
     private Logger loggerMock
+
 
     def setup() {
         loggerMock = Mock(Logger)

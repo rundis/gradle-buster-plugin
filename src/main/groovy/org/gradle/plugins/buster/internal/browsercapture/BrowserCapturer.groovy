@@ -1,5 +1,6 @@
 package org.gradle.plugins.buster.internal.browsercapture
 
+import org.gradle.api.logging.LogLevel
 import org.gradle.api.logging.Logger
 import org.gradle.plugins.buster.config.Browser
 import org.openqa.selenium.WebDriver
@@ -7,7 +8,6 @@ import org.openqa.selenium.WebDriver
 class BrowserCapturer {
     final Map<SupportedBrowser, WebDriver> captures = [:]
     final Logger logger
-
 
     BrowserCapturer(Logger logger) {
         this.logger = logger
@@ -43,9 +43,11 @@ class BrowserCapturer {
     }
 
     private def createDriver(SupportedBrowser supportedBrowser) {
-        supportedBrowser.driverCreate.call()
+        def logLevel = [LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.QUIET, LogLevel.WARN, LogLevel.ERROR]
+                        .find{logger.isEnabled(it)}
 
-
+        Map params = [logLevel: logLevel]
+        supportedBrowser.driverCreate.call(params)
     }
 
     def shutdown() {
