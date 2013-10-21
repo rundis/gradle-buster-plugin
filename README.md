@@ -26,7 +26,7 @@ buildscript {
         mavenRepo urls: 'http://dl.bintray.com/rundis/maven'
     }
     dependencies {
-        classpath  'org.gradle.buster:gradle-buster-plugin:0.2.0'
+        classpath  'org.gradle.buster:gradle-buster-plugin:0.2.3'
     }
 }
 
@@ -42,7 +42,7 @@ build.dependsOn busterTest // Optional, hook up the relevant buster tasks into y
 buildscript {
     repositories { jcenter() }
     dependencies {
-        classpath  'org.gradle.buster:gradle-buster-plugin:0.2.0'
+        classpath  'org.gradle.buster:gradle-buster-plugin:0.2.3'
     }
 }
 
@@ -57,7 +57,7 @@ build.dependsOn busterTest // Optional, hook up the relevant buster tasks into y
 ### Configuration options
 ```groovy
 buster {
-	port = 1112 // override default of 1111 for buster, optional to specify.
+	port = 1112 // Optional defaults to 1111, 0 will dynamically assign free port
 	configFile = file('config/buster.js') /* If left out it will look in $project.projectDir/buster.js | $project.projectDir/test/buster.js | $project.projectDir/spec/buster.js */
 	busterExecutablesPath = "node_modules/buster/bin" // Optional, if specified will prepend.
 	browsers {  // if you leave out this closure, phantomjs is default added to the browsers used for testing
@@ -70,13 +70,6 @@ buster {
 
 You can also set buster executable path by specifying a system property (`-Dbuster.executables.path=node_modules/buster/bin`). This overrides the configuration setting busterExecutablesPath
 
-In a ci environment with multiple potentially concurrent builds, you might want to dynamically asign ports.
-A simple solution would be along the lines of
-```groovy
-buster {
-    port = new ServerSocket(0).localPort
-}
-```
 
 
 #### More on browser configuration
@@ -159,6 +152,13 @@ projectsEvaluated {
 
 
 ### Version history
+
+#### 0.2.3
+# Logging output xml on potential errors parsing buster junit xml
+# Dynamically assign port for buster server
+# Less verbose report output for autotest task
+# Cleaned up log levels for phantom (ghost) driver and upped driver version
+
 
 #### 0.2.2
 * Refactor buster-server process handling to allow running concurrent builds for same user 
