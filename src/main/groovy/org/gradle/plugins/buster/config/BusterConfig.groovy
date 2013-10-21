@@ -24,12 +24,20 @@ class BusterConfig {
         browsers.configure(c)
     }
 
+
+    int getResolvedPort() {
+        if(port == 0) {
+            port = new ServerSocket(0).localPort
+        }
+        port
+    }
+
     String getCaptureUrl() {
-        "http://localhost:${port}/capture"
+        "http://localhost:${resolvedPort}/capture"
     }
 
     String getServerUrl() {
-        "http://localhost:${port}"
+        "http://localhost:${resolvedPort}"
     }
 
     String getTestExecutablePath() {

@@ -5,6 +5,7 @@ import org.gradle.plugins.buster.config.BusterConfig
 import org.gradle.plugins.buster.internal.browsercapture.SupportedBrowser
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
+import spock.lang.Unroll
 
 
 class BusterPluginSpec extends Specification {
@@ -49,6 +50,34 @@ class BusterPluginSpec extends Specification {
 
         then:
         project.buster.port > 0
+    }
+
+    @Unroll
+    def "let the plugin dynamically assign port"() {
+        when:
+        Project project = ProjectBuilder.builder().build().with {
+            apply plugin: 'buster'
+
+            buster {
+                port = 0
+
+            }
+            it
+        }
+        triggerResolve.call(project)
+
+
+        then:
+        project.buster.port > 0
+        project.buster.port != 1111 // possible but unlikely enough that we can deal with it!
+
+
+        where:
+        triggerResolve << [
+            {p -> p.buster.resolvedPort},
+            {p -> p.buster.captureUrl},
+            {p -> p.buster.serverUrl}
+        ]
 
     }
 
