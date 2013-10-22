@@ -154,10 +154,10 @@ projectsEvaluated {
 ### Version history
 
 #### 0.2.3
-# Logging output xml on potential errors parsing buster junit xml
-# Dynamically assign port for buster server
-# Less verbose report output for autotest task
-# Cleaned up log levels for phantom (ghost) driver and upped driver version
+* Logging output xml on potential errors parsing buster junit xml
+* Dynamically assign port for buster server
+* Less verbose report output for autotest task
+* Cleaned up log levels for phantom (ghost) driver and upped driver version
 
 
 #### 0.2.2
