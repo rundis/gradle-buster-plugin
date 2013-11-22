@@ -15,6 +15,10 @@ class BusterWatcher {
     private final Closure listener
     private final GlobMatcher globMatcher
     private volatile boolean stop
+    private final Throttler throttler
+
+
+
 
     private BusterWatcher(Project project, Closure listener, GlobMatcher globMatcher) throws IOException {
         this.project = project
@@ -22,6 +26,7 @@ class BusterWatcher {
         this.keys = new HashMap<>()
         this.listener = listener
         this.globMatcher = globMatcher
+        this.throttler = new Throttler(closure: this.listener, delay: 100)
     }
 
 
@@ -63,6 +68,7 @@ class BusterWatcher {
                 continue
             }
 
+
             for (WatchEvent<?> event: key.pollEvents()) {
                 WatchEvent.Kind kind = event.kind()
 
@@ -74,7 +80,7 @@ class BusterWatcher {
                 Path child = resolveChild(dir, event)
 
                 if(globMatcher.matches(child.toString())) {
-                    listener(event.kind().name(), child)
+                    throttler.queue([kind:event.kind().name(), path:child])
                 }
 
                 if (kind == ENTRY_CREATE) {

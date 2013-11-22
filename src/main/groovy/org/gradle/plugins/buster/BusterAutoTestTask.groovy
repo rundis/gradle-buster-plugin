@@ -23,8 +23,8 @@ class BusterAutoTestTask extends  DefaultTask {
         def globPatterns = new BusterJSParser().extractGlobPatterns(busterJs.text)
 
 
-        Closure listener = {kind, path ->
-            project.logger.info("Starting testrun due to change in path: $path")
+        Closure listener = {args ->
+            project.logger.info("Starting testrun due to change in path: $args.path")
             def busterConfig = project.buster
 
             def execResult = project.exec {

@@ -19,7 +19,7 @@ class BusterWatcherSpec extends Specification {
     def "create watches given directory and subdirectories"() {
         given:
         def testRootPath = new File("example").absolutePath
-        def listener = {event, path -> println "Hello"}
+        def listener = {args -> println "Hello"}
         def project = project()
         def watcher = BusterWatcher.create(project, testRootPath, [[rootPath: "", includes:['*.js']]], listener)
 
@@ -34,7 +34,7 @@ class BusterWatcherSpec extends Specification {
         def project = project()
         File testRootPath = tempFolder.newFolder()
         int listenerInvokeCount = 0
-        def listener = {kind, path -> listenerInvokeCount++}
+        def listener = {args -> listenerInvokeCount++}
         def dummyFile = new File(testRootPath, "dummy.txt")
         def dummyFile2 = new File(testRootPath, "dummy2.txt")
 
@@ -46,7 +46,7 @@ class BusterWatcherSpec extends Specification {
                 BusterWatcher.create(project, testRootPath.absolutePath, [[rootPath: "", includes:['*.*']]], listener).processEvents()
             }
         })
-        sleep(100)
+        sleep(250)
         dummyFile << "dill"
         dummyFile2 << "dall"
 
@@ -57,7 +57,7 @@ class BusterWatcherSpec extends Specification {
         service.shutdown()
 
         then:
-        listenerInvokeCount >= 2 // at least 2 create events, but most likely also 2 modify events !
+        listenerInvokeCount == 1 // throttles events withing 1 second, so should only be one
     }
 
     def "create directory and then file triggers pathevent"() {
@@ -65,8 +65,7 @@ class BusterWatcherSpec extends Specification {
         File testRootPath = tempFolder.newFolder()
         File subFolder = new File(testRootPath, "sub")
         int listenerInvokeCount = 0
-        def listener = {kind, path ->
-            project.logger.info("Kind: $kind, path: $path")
+        def listener = {args ->
             listenerInvokeCount++
         }
         def dummyFile = new File(subFolder, "dummy.txt")
@@ -80,10 +79,10 @@ class BusterWatcherSpec extends Specification {
                 BusterWatcher.create(project, testRootPath.absolutePath, [[rootPath: "", includes:['**']]], listener).processEvents()
             }
         })
-        sleep(100)
+        sleep(150)
         project.logger.info("Creating subdirectory")
         subFolder.mkdir()
-        sleep(100)
+        sleep(150)
         dummyFile << "dill"
 
         try {
@@ -91,6 +90,8 @@ class BusterWatcherSpec extends Specification {
         } catch(Exception e) {
         }
         service.shutdown()
+        println "number of invocations: " + listenerInvokeCount
+
 
         then:
         listenerInvokeCount >= 2 // at least 2 create events, but most likely also 2 modify events !
