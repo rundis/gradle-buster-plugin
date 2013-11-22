@@ -40,12 +40,10 @@ class BusterWatcherSpec extends Specification {
 
         when:
         def service = Executors.newFixedThreadPool(2)
-        Future future = service.submit(new Runnable() {
-            @Override
-            void run() {
+        Future future = service.submit({
                 BusterWatcher.create(project, testRootPath.absolutePath, [[rootPath: "", includes:['*.*']]], listener).processEvents()
-            }
-        })
+            } as Runnable
+        )
         sleep(250)
         dummyFile << "dill"
         dummyFile2 << "dall"
@@ -73,12 +71,10 @@ class BusterWatcherSpec extends Specification {
 
         when:
         def service = Executors.newFixedThreadPool(2)
-        Future future = service.submit(new Runnable() {
-            @Override
-            void run() {
+        Future future = service.submit({
                 BusterWatcher.create(project, testRootPath.absolutePath, [[rootPath: "", includes:['**']]], listener).processEvents()
-            }
-        })
+            } as Runnable
+        )
         sleep(150)
         project.logger.info("Creating subdirectory")
         subFolder.mkdir()
