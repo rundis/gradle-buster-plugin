@@ -12,9 +12,7 @@ class Throttler {
     private Future future = null
 
     def queue(args) {
-        if(future && !future.done) {
-            future.cancel(false)
-        }
-        future = scheduler.schedule({closure(args)} as Runnable, 100, TimeUnit.MILLISECONDS)
+        future?.cancel(false)
+        future = scheduler.schedule({closure(args)} as Runnable, delay, TimeUnit.MILLISECONDS)
     }
 }
