@@ -13,44 +13,58 @@ import java.util.concurrent.TimeUnit
 
 class BusterWatcherSpec extends Specification {
 
-    @Rule
-    TemporaryFolder tempFolder
+    BusterJSParser parserMock
+
+    def setup() {
+        parserMock = Mock(BusterJSParser)
+    }
+
 
     def "create watches given directory and subdirectories"() {
         given:
-        def testRootPath = new File("example").absolutePath
-        def listener = {args -> println "Hello"}
+
+        def listener = { args -> println "Hello" }
         def project = project()
-        def watcher = BusterWatcher.create(project, testRootPath, [[rootPath: "", includes:['*.js']]], listener)
+        def testRootPath = new File(project.projectDir, "example/lib")
+        testRootPath.mkdirs()
+
+        parserMock.extractGlobPatterns(_) >> [[includes: ['*.js']]]
+
+        def watcher = BusterWatcher.create(project, parserMock, listener)
 
         expect:
-        watcher.keys.values().contains(Paths.get(testRootPath))
-        watcher.keys.values().contains(Paths.get(new File("example/lib").absolutePath))
+        watcher.keys.values().contains(Paths.get(new File(project.projectDir, "example").absolutePath))
+        watcher.keys.values().contains(Paths.get(new File(project.projectDir, "example/lib").absolutePath))
     }
 
 
     def "create file triggers pathevent"() {
         given:
         def project = project()
-        File testRootPath = tempFolder.newFolder()
         int listenerInvokeCount = 0
-        def listener = {args -> listenerInvokeCount++}
-        def dummyFile = new File(testRootPath, "dummy.txt")
-        def dummyFile2 = new File(testRootPath, "dummy2.txt")
+        def listener = { args -> listenerInvokeCount++ }
+        def dummyFile = new File(project.projectDir, "dummy.txt")
+        def dummyFile2 = new File(project.projectDir, "dummy2.txt")
+
+        parserMock.extractGlobPatterns(_) >> [[includes: ['*.txt']]]
 
         when:
         def service = Executors.newFixedThreadPool(2)
         Future future = service.submit({
-                BusterWatcher.create(project, testRootPath.absolutePath, [[rootPath: "", includes:['*.*']]], listener).processEvents()
-            } as Runnable
-        )
+            def watcher = BusterWatcher.create(project, parserMock, listener)
+            watcher.metaClass.busterJsConfig = {
+                "Dummy glob patterns"
+            }
+            watcher.processEvents()
+
+            } as Runnable)
         sleep(250)
         dummyFile << "dill"
         dummyFile2 << "dall"
 
         try {
             future.get(1, TimeUnit.SECONDS)
-        } catch(Exception e) {
+        } catch (Exception e) {
         }
         service.shutdown()
 
@@ -60,21 +74,26 @@ class BusterWatcherSpec extends Specification {
 
     def "create directory and then file triggers pathevent"() {
         def project = project()
-        File testRootPath = tempFolder.newFolder()
-        File subFolder = new File(testRootPath, "sub")
+        File subFolder = new File(project.projectDir, "sub")
         int listenerInvokeCount = 0
-        def listener = {args ->
+        def listener = { args ->
             listenerInvokeCount++
         }
         def dummyFile = new File(subFolder, "dummy.txt")
-
+        parserMock.extractGlobPatterns(_) >> [[includes: ['**']]]
 
         when:
         def service = Executors.newFixedThreadPool(2)
+
         Future future = service.submit({
-                BusterWatcher.create(project, testRootPath.absolutePath, [[rootPath: "", includes:['**']]], listener).processEvents()
-            } as Runnable
-        )
+            def watcher = BusterWatcher.create(project, parserMock, listener)
+            watcher.metaClass.busterJsConfig = {
+                "Dummy glob patterns"
+            }
+            watcher.processEvents()
+
+        } as Runnable)
+
         sleep(150)
         project.logger.info("Creating subdirectory")
         subFolder.mkdir()
@@ -83,19 +102,17 @@ class BusterWatcherSpec extends Specification {
 
         try {
             future.get(1, TimeUnit.SECONDS)
-        } catch(Exception e) {
-        }
+        } catch (Exception e) {}
         service.shutdown()
         println "number of invocations: " + listenerInvokeCount
 
 
         then:
         listenerInvokeCount >= 2 // at least 2 create events, but most likely also 2 modify events !
-
     }
 
 
-    private Project project() {
+    private Project project () {
         ProjectBuilder.builder().build().with {
             apply plugin: 'buster'
             it

@@ -6,10 +6,16 @@ import java.util.concurrent.TimeUnit
 
 
 class Throttler {
-    long delay
-    Closure closure
+    final long delay
+    final Closure closure
     final scheduler = Executors.newScheduledThreadPool(1)
     private Future future = null
+
+    public Throttler(long delay, Closure closure) {
+        this.delay = delay
+        this.closure = closure
+    }
+
 
     def queue(args) {
         future?.cancel(false)

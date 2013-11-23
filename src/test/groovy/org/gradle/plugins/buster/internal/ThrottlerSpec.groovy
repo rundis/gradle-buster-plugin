@@ -10,7 +10,7 @@ class ThrottlerSpec extends Specification {
         given:
         def numExecutes = 0;
         Closure myClosure = {args -> numExecutes++}
-        def throttler = new Throttler(delay:10, closure: myClosure)
+        def throttler = new Throttler(10, myClosure)
 
         when:
         throttler.queue([:])
@@ -24,7 +24,7 @@ class ThrottlerSpec extends Specification {
         given:
         def numExecutes = 0;
         Closure myClosure = {args -> numExecutes++}
-        def throttler = new Throttler(delay:10, closure: myClosure)
+        def throttler = new Throttler(10, myClosure)
 
         when:
         throttler.queue([:])
@@ -38,7 +38,7 @@ class ThrottlerSpec extends Specification {
         given:
         def numExecutes = 0;
         Closure myClosure = {args -> numExecutes++}
-        def throttler = new Throttler(delay:10, closure: myClosure)
+        def throttler = new Throttler(10, myClosure)
 
         when:
         throttler.queue([:])

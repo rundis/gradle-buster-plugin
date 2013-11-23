@@ -10,36 +10,34 @@ import static name.pachler.nio.file.StandardWatchEventKind.*
 class BusterWatcher {
 
     private final Project project
+    private final BusterJSParser busterJSParser
+    private final Closure listener
     private final WatchService watcher
     private final Map<WatchKey,Path> keys
-    private final Closure listener
-    private final GlobMatcher globMatcher
     private volatile boolean stop
     private final Throttler throttler
 
 
 
 
-    private BusterWatcher(Project project, Closure listener, GlobMatcher globMatcher) throws IOException {
+    private BusterWatcher(Project project, Closure listener, BusterJSParser busterJSParser) throws IOException {
         this.project = project
+        this.busterJSParser = busterJSParser
         this.watcher = FileSystems.getDefault().newWatchService()
         this.keys = new HashMap<>()
         this.listener = listener
-        this.globMatcher = globMatcher
-        this.throttler = new Throttler(closure: this.listener, delay: 100)
+        this.throttler = new Throttler(100, listener)
     }
 
-
-    static BusterWatcher create(Project project, String rootPath, List<Map> globPatterns, Closure pathEventListener) {
+    static BusterWatcher create(Project project, BusterJSParser busterJSParser, Closure listener) {
         try {
-            GlobMatcher globMatcher = new GlobMatcher(rootPath, globPatterns)
-            BusterWatcher busterWatcher = new BusterWatcher(project, pathEventListener, globMatcher)
-            Path path = Paths.get(rootPath)
-            busterWatcher.registerAll(path)
+            Path path = Paths.get(project.projectDir.absolutePath)
+            println path
 
-
-            busterWatcher
-        } catch(IOException e) {
+            BusterWatcher watcher = new BusterWatcher(project, listener, busterJSParser)
+            watcher.registerAll(path)
+            return watcher
+        } catch (IOException e) {
             throw new BusterWatcherException("Error creating watcher", e);
         }
     }
@@ -47,6 +45,7 @@ class BusterWatcher {
     void stop() {
         stop = true
     }
+
 
 
     /**
@@ -78,11 +77,9 @@ class BusterWatcher {
                 }
 
                 Path child = resolveChild(dir, event)
-
-                if(globMatcher.matches(child.toString())) {
+                if(globMatcher().matches(child.toString())) {
                     throttler.queue([kind:event.kind().name(), path:child])
                 }
-
                 if (kind == ENTRY_CREATE) {
                     registerIfDirectory(child)
                 }
@@ -100,6 +97,22 @@ class BusterWatcher {
         }
 
     }
+
+    private GlobMatcher globMatcher() {
+        def globPatterns = busterJSParser.extractGlobPatterns(busterJsConfig())
+        new GlobMatcher(project.projectDir.absolutePath, globPatterns)
+    }
+
+    private String busterJsConfig() {
+        File busterJsFile = project.buster.resolveConfigFile(project)
+        if(!busterJsFile) {
+            throw new IllegalArgumentException("No default buster config file found and no config file specified in options")
+        }
+
+        busterJsFile.text
+    }
+
+
 
     private Path resolveChild(Path dir, WatchEvent<?> event) {
         WatchEvent<Path> ev = cast(event)

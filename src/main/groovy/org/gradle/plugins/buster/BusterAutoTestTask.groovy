@@ -5,6 +5,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.plugins.buster.internal.BusterJSParser
 import org.gradle.plugins.buster.internal.BusterTestingService
 import org.gradle.plugins.buster.internal.BusterWatcher
+import org.gradle.plugins.buster.internal.GlobMatcher
 
 class BusterAutoTestTask extends  DefaultTask {
     static NAME = "busterAutoTest"
@@ -20,11 +21,9 @@ class BusterAutoTestTask extends  DefaultTask {
     @TaskAction
     void test() {
         def busterJs = resolveBusterJs()
-        def globPatterns = new BusterJSParser().extractGlobPatterns(busterJs.text)
 
-
-        Closure listener = {args ->
-            project.logger.info("Starting testrun due to change in path: $args.path")
+        Closure listener = {params ->
+            project.logger.info("Starting testrun due to change in path: $params.path")
             def busterConfig = project.buster
 
             def execResult = project.exec {
@@ -37,7 +36,7 @@ class BusterAutoTestTask extends  DefaultTask {
 
         service.prepareForTest()
 
-        BusterWatcher.create(project, project.projectDir.absolutePath, globPatterns, listener).processEvents()
+        BusterWatcher.create(project, new BusterJSParser(), listener).processEvents()
     }
 
 
