@@ -14,16 +14,24 @@ import java.util.concurrent.TimeUnit
 class BusterWatcherSpec extends Specification {
 
     BusterJSParser parserMock
+    def service
+    def listenerInvokeCount
+    def listener
 
     def setup() {
-        parserMock = Mock(BusterJSParser)
+        parserMock = Stub(BusterJSParser)
+        service = Executors.newFixedThreadPool(1)
+        listenerInvokeCount = 0
+        listener = { args -> listenerInvokeCount++ }
+    }
+
+    def cleanup() {
+        service.shutdown()
     }
 
 
     def "create watches given directory and subdirectories"() {
         given:
-
-        def listener = { args -> println "Hello" }
         def project = project()
         def testRootPath = new File(project.projectDir, "example/lib")
         testRootPath.mkdirs()
@@ -41,24 +49,20 @@ class BusterWatcherSpec extends Specification {
     def "create file triggers pathevent"() {
         given:
         def project = project()
-        int listenerInvokeCount = 0
-        def listener = { args -> listenerInvokeCount++ }
+
         def dummyFile = new File(project.projectDir, "dummy.txt")
         def dummyFile2 = new File(project.projectDir, "dummy2.txt")
 
         parserMock.extractGlobPatterns(_) >> [[includes: ['*.txt']]]
 
         when:
-        def service = Executors.newFixedThreadPool(2)
         Future future = service.submit({
             def watcher = BusterWatcher.create(project, parserMock, listener)
-            watcher.metaClass.busterJsConfig = {
-                "Dummy glob patterns"
-            }
+            watcher.metaClass.busterJsConfig = { "Dummy glob patterns" }
             watcher.processEvents()
 
             } as Runnable)
-        sleep(250)
+        sleep(150)
         dummyFile << "dill"
         dummyFile2 << "dall"
 
@@ -66,36 +70,27 @@ class BusterWatcherSpec extends Specification {
             future.get(1, TimeUnit.SECONDS)
         } catch (Exception e) {
         }
-        service.shutdown()
 
         then:
-        listenerInvokeCount == 1 // throttles events withing 1 second, so should only be one
+        listenerInvokeCount == 1 // throttles events
     }
 
     def "create directory and then file triggers pathevent"() {
+        given:
         def project = project()
         File subFolder = new File(project.projectDir, "sub")
-        int listenerInvokeCount = 0
-        def listener = { args ->
-            listenerInvokeCount++
-        }
         def dummyFile = new File(subFolder, "dummy.txt")
         parserMock.extractGlobPatterns(_) >> [[includes: ['**']]]
 
         when:
-        def service = Executors.newFixedThreadPool(2)
-
         Future future = service.submit({
             def watcher = BusterWatcher.create(project, parserMock, listener)
-            watcher.metaClass.busterJsConfig = {
-                "Dummy glob patterns"
-            }
+            watcher.metaClass.busterJsConfig = { "Dummy glob patterns" }
             watcher.processEvents()
 
         } as Runnable)
 
         sleep(150)
-        project.logger.info("Creating subdirectory")
         subFolder.mkdir()
         sleep(150)
         dummyFile << "dill"
@@ -103,12 +98,47 @@ class BusterWatcherSpec extends Specification {
         try {
             future.get(1, TimeUnit.SECONDS)
         } catch (Exception e) {}
-        service.shutdown()
-        println "number of invocations: " + listenerInvokeCount
-
 
         then:
         listenerInvokeCount >= 2 // at least 2 create events, but most likely also 2 modify events !
+    }
+
+    def "changes in buster js should be picked up"() {
+        given:
+        def project = project()
+        def sub1 = new File(project.projectDir, "sub1")
+        def sub2 = new File(project.projectDir, "sub2")
+        def file1 = new File(sub1, "dill.js")
+        def file2 = new File(sub2, "dill2.js")
+        parserMock.extractGlobPatterns(_) >> [[includes: ['sub1/*.js']]]
+
+        when: "Running with intitial config"
+        sub1.mkdir()
+        sub2.mkdir()
+        Future future = service.submit({
+            def watcher = BusterWatcher.create(project, parserMock, listener)
+            watcher.metaClass.busterJsConfig = { "Dummy glob patterns" }
+            watcher.processEvents()
+
+        } as Runnable)
+
+
+        sleep(150)
+        file1 << "Hello"
+        sleep(250)
+
+        then: "Anything within that config is picked up"
+        listenerInvokeCount == 1
+
+
+        when: "Config changes"
+        parserMock = Stub(BusterJSParser)
+        file2 << "Hello2"
+        sleep(250)
+
+        then: "additional file is picked up"
+        parserMock.extractGlobPatterns(_) >> [[includes: ['sub1/*.js', 'sub2/*.js']]]
+        listenerInvokeCount == 2
     }
 
 

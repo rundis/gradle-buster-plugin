@@ -32,8 +32,6 @@ class BusterWatcher {
     static BusterWatcher create(Project project, BusterJSParser busterJSParser, Closure listener) {
         try {
             Path path = Paths.get(project.projectDir.absolutePath)
-            println path
-
             BusterWatcher watcher = new BusterWatcher(project, listener, busterJSParser)
             watcher.registerAll(path)
             return watcher
@@ -68,22 +66,7 @@ class BusterWatcher {
             }
 
 
-            for (WatchEvent<?> event: key.pollEvents()) {
-                WatchEvent.Kind kind = event.kind()
-
-                if (kind == OVERFLOW) {
-                    project.logger.warn("Watcher overflow")
-                    continue
-                }
-
-                Path child = resolveChild(dir, event)
-                if(globMatcher().matches(child.toString())) {
-                    throttler.queue([kind:event.kind().name(), path:child])
-                }
-                if (kind == ENTRY_CREATE) {
-                    registerIfDirectory(child)
-                }
-            }
+            pollEvents(key, dir)
 
             boolean valid = key.reset()
             if (!valid) {
@@ -96,6 +79,25 @@ class BusterWatcher {
             }
         }
 
+    }
+
+    private void pollEvents(WatchKey key, Path dir) {
+        for (WatchEvent<?> event : key.pollEvents()) {
+            WatchEvent.Kind kind = event.kind()
+
+            if (kind == OVERFLOW) {
+                project.logger.warn("Watcher overflow")
+                continue
+            }
+
+            Path child = resolveChild(dir, event)
+            if (globMatcher().matches(child.toString())) {
+                throttler.queue([kind: event.kind().name(), path: child])
+            }
+            if (kind == ENTRY_CREATE) {
+                registerIfDirectory(child)
+            }
+        }
     }
 
     private GlobMatcher globMatcher() {
