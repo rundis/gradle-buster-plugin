@@ -38,10 +38,10 @@ dependencies {
     compile("org.seleniumhq.selenium:selenium-java:2.33.0") {
         exclude group: "commons-logging", module: "commons-logging"
     }
-    compile("org.fusesource:sigar:1.6.4:native") {
+    testCompile("org.fusesource:sigar:1.6.4:native") {
         exclude group: "log4j", module: "log4j"
     }
-    compile("org.fusesource:sigar:1.6.4") {
+    testCompile("org.fusesource:sigar:1.6.4") {
         exclude group: "log4j", module: "log4j"
     }
 
@@ -68,7 +68,6 @@ publishing {
             artifact sourceJar {
                 classifier "sources"
             }
-
 
             // as of 1.6 publish does not respect excludes. Must add manually
             pom.withXml {

@@ -1,4 +1,4 @@
-package org.gradle.plugins.buster.internal.process
+package org.gradle.plugins.buster.testutils
 
 import org.hyperic.sigar.Sigar
 import org.hyperic.sigar.SigarException

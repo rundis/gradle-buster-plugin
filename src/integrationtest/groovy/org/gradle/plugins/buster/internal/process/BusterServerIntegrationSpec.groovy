@@ -2,6 +2,7 @@ package org.gradle.plugins.buster.internal.process
 
 import org.gradle.api.GradleException
 import org.gradle.plugins.buster.config.BusterConfig
+import org.gradle.plugins.buster.testutils.BusterHelper
 import spock.lang.Specification
 
 

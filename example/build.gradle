@@ -19,6 +19,7 @@ buildscript {
 }
 
 
+apply plugin: 'base'
 apply plugin: 'buster'
 
 // configure buster options

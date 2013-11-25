@@ -1,6 +1,6 @@
 package org.gradle.plugins.buster.internal
 
-import org.gradle.plugins.buster.internal.process.Processes
+import org.gradle.plugins.buster.testutils.Processes
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 

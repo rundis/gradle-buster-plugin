@@ -18,8 +18,12 @@ buildscript {
 }
 
 
+allprojects {
+    apply plugin: 'base'
+}
 
 subprojects {
+
     apply plugin: 'buster'
     buster {
         browsers {
