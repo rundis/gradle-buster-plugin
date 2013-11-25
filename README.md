@@ -21,26 +21,7 @@ In addition you may of course test locally with any browser(s) you wish. In fact
 
 ```groovy
 buildscript {
-    repositories {
-        mavenCentral()
-        mavenRepo urls: 'http://dl.bintray.com/rundis/maven'
-    }
-    dependencies {
-        classpath  'org.gradle.buster:gradle-buster-plugin:0.2.3'
-    }
-}
-
-apply plugin: 'buster'
-
-
-build.dependsOn busterTest // Optional, hook up the relevant buster tasks into your build task graph
-
-```
-
-#### Gradle 1.7
-```groovy
-buildscript {
-    repositories { jcenter() }
+    repositories { jcenter() }  // or mavenRepo urls: 'http://dl.bintray.com/rundis/maven'
     dependencies {
         classpath  'org.gradle.buster:gradle-buster-plugin:0.2.3'
     }
@@ -152,6 +133,11 @@ projectsEvaluated {
 
 
 ### Version history
+
+#### 0.2.4
+* Autotest throttles file changes
+* Autotest picks up changes in buster.js
+* Clean up of dependencies
 
 #### 0.2.3
 * Logging output xml on potential errors parsing buster junit xml
