@@ -3,6 +3,7 @@ package org.gradle.plugins.buster.config
 import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.Project
 import org.gradle.plugins.buster.internal.browsercapture.SupportedBrowser
+import org.gradle.plugins.buster.internal.process.PortResolver
 
 class BusterConfig {
     static final DEFAULT_BUSTER_PORT = 1111
@@ -27,7 +28,7 @@ class BusterConfig {
 
     int getResolvedPort() {
         if(port == 0) {
-            port = new ServerSocket(0).localPort
+            port = PortResolver.findFreePort()
         }
         port
     }

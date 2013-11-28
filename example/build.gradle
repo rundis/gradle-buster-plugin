@@ -18,7 +18,7 @@ apply plugin: 'buster'
 
 // configure buster options
 buster {
-    port = 1112 // override default
+    port = 0 //1112 // override default
     browsers {
         //safari
         //firefox

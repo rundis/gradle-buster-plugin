@@ -18,7 +18,7 @@ class BusterServer {
         def proc = new ProcessBuilder(
                 config.serverExecutablePath,
                 "-p",
-                config.port.toString()
+                config.resolvedPort.toString()
         ).redirectErrorStream(true).start()
 
         def out = proc.in.newReader().readLine()
@@ -28,7 +28,7 @@ class BusterServer {
         proc.err.close()
 
         if(!out.contains("running")) {
-            throw new GradleException("Error starting buster server (on port ${config.port}): $out")
+            throw new GradleException("Error starting buster server (on port ${config.resolvedPort}): $out")
         }
 
         return new BusterServer(proc)
