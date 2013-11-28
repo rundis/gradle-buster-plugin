@@ -23,7 +23,7 @@ In addition you may of course test locally with any browser(s) you wish. In fact
 buildscript {
     repositories { jcenter() }  // or mavenRepo urls: 'http://dl.bintray.com/rundis/maven'
     dependencies {
-        classpath  'org.gradle.buster:gradle-buster-plugin:0.2.4'
+        classpath  'org.gradle.buster:gradle-buster-plugin:0.2.4.1'
     }
 }
 
@@ -133,6 +133,11 @@ projectsEvaluated {
 
 
 ### Version history
+
+
+#### 0.2.4.1
+* Bugfix for dynamically assigning port
+
 
 #### 0.2.4
 * Autotest throttles file changes

@@ -21,6 +21,7 @@ class BusterServerIntegrationSpec extends Specification {
         given:
         def configMock = Mock(BusterConfig) {
             getPort() >> 1111
+            getResolvedPort() >> 1111
             getServerExecutablePath() >> "buster-server"
         }
 
@@ -42,6 +43,7 @@ class BusterServerIntegrationSpec extends Specification {
         given:
         def configMock = Mock(BusterConfig) {
             getPort() >> 1111
+            getResolvedPort() >> 1111
             getServerExecutablePath() >> "buster-server"
         }
 
