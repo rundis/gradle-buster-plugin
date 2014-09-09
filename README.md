@@ -9,7 +9,6 @@ _Big disclaimer: Will not run on Windows_
 
 
 ### Preconditions
-* [Gradle](http://www.gradle.org) 1.6 or higher
 * [NodeJS/npm](http://nodejs.org/) - Precondition for Buster.js. Gives you superfast javascript tests.
 * [Buster.js node module](http://docs.busterjs.org/en/latest/) - The kickass javascript test framework this plugin is all about enabling in your gradle builds.
 * [PhantomJS](http://phantomjs.org/) - Required for enabling headless testing on your CI server. It makes sense that you also test with phantom during development.
@@ -23,11 +22,11 @@ In addition you may of course test locally with any browser(s) you wish. In fact
 buildscript {
     repositories { jcenter() }  // or mavenRepo urls: 'http://dl.bintray.com/rundis/maven'
     dependencies {
-        classpath  'org.gradle.buster:gradle-buster-plugin:0.2.4.1'
+        classpath  'org.gradle.buster:gradle-buster-plugin:0.2.4.2'
     }
 }
 
-apply plugin: 'buster'
+apply plugin: 'com.github.rundis.buster'
 
 
 build.dependsOn busterTest // Optional, hook up the relevant buster tasks into your build task graph
@@ -134,6 +133,9 @@ projectsEvaluated {
 
 ### Version history
 
+#### 0.2.4.2
+* Updated to gradle 2.1
+* Modified publication to allow publishing to gradle plugin portal. Now you need to provide fully qualified plugin id
 
 #### 0.2.4.1
 * Bugfix for dynamically assigning port

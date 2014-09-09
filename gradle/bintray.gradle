@@ -1,0 +1,18 @@
+apply plugin: 'com.jfrog.bintray'
+
+bintray {
+    user = bintray_username
+    key = bintray_api_key
+    publications = ['mavenCustom']
+    pkg {
+        repo = 'maven'
+        name = 'gradle-buster-plugin'
+        desc = 'Gradle plugin for running busterjs javascript tests'
+        licenses = ['BSD']
+        labels = ['buster', 'gradle']
+        version {
+            name = project.version
+            attributes = ['gradle-plugin': 'com.github.rundis.buster:com.github.rundis:buster-gradle-plugin']
+        }
+    }
+}

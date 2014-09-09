@@ -15,4 +15,5 @@ describe("A math module", function () {
         buster.assert.equals(4, this.foo.double(2));
     });
 
+
 });

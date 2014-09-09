@@ -1,21 +1,25 @@
 buildscript {
     repositories {
-        maven { url 'http://jcenter.bintray.com' }
+        jcenter()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.2'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
     }
 }
-apply plugin: 'bintray'
+
+if (!project.hasProperty('bintray_username')) ext.bintray_username = ''
+if (!project.hasProperty('bintray_api_key')) ext.bintray_api_key = ''
+
+apply from: 'gradle/bintray.gradle'
 
 
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
+apply plugin: 'idea'
 
 description = 'Gradle Buster plugin for running busterjs tests'
-group = 'org.gradle.buster'
-version = '0.2.4.1'
-
+group = 'com.github.rundis'
+version = '0.2.4.2'
 
 
 repositories {
@@ -23,9 +27,9 @@ repositories {
 }
 
 
-configurations {
+/*configurations {
     sourceArchives
-}
+}*/
 
 dependencies {
 
@@ -46,8 +50,10 @@ dependencies {
     }
 
 
-    testCompile 'org.spockframework:spock-core:0.7-groovy-1.8',
-            'cglib:cglib-nodep:2.2.2'
+    testCompile ('org.spockframework:spock-core:0.7-groovy-2.0') {
+        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+    }
+    testCompile 'cglib:cglib-nodep:2.2.2'
 
 }
 
@@ -60,48 +66,17 @@ task sourceJar(type: Jar) {
 }
 
 
+
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        mavenCustom(MavenPublication) {
             from components.java
+            artifact sourceJar
 
-            artifact sourceJar {
-                classifier "sources"
-            }
-
-            // as of 1.6 publish does not respect excludes. Must add manually
-            pom.withXml {
-                asNode().dependencies[0].dependency.findAll { it.groupId[0].value()[0] == 'org.fusesource' }.each {
-                    it.children().last() + {
-                        resolveStrategy = Closure.DELEGATE_FIRST
-                        exclusions {
-                            exclusion {
-                                groupId 'log4j'
-                                artifactId 'log4j'
-                            }
-                        }
-                    }
-                }
-            }
-
+            setArtifactId('gradle-buster-plugin')
         }
-
-    }
-    repositories {
-        maven {
-            url "https://api.bintray.com/maven/rundis/maven/gradle-buster-plugin"
-            credentials {
-                username = "rundis" //hasProperty('bintray_username') ? bintray_username : ''
-                password = "f3715746e3b1d812d058105beadb9f4a393f58537cf5d7817ba3bf8033f9a3e1"//hasProperty('bintray_api_key') ? bintray_api_key : ''
-            }
-        }
-    }
-
-    generatePomFileForMavenJavaPublication {
-        destination = file("$buildDir/generated-pom.xml")
     }
 }
-
 
 
 sourceSets {
@@ -125,24 +100,6 @@ task integrationTest(type: Test) {
 build.dependsOn integrationTest
 
 
-
-bintray {
-    user = hasProperty('bintray_username') ? bintray_username : ''
-    key = hasProperty('bintray_api_key') ? bintray_api_key : ''
-    configurations = ['archives']
-    publications = ['mavenJava']
-    pkg {
-        repo = 'maven'
-        userOrg = 'rundis' // an optional organization name when the repo belongs to one of the user's orgs
-        name = 'gradle-buster-plugin'
-        desc = 'Gradle plugin for running busterjs javascript tests'
-        licenses = ['BSD']
-        //labels = ['gear', 'gore', 'gorilla']
-    }
-    //dryRun = true // whether to run this as dry-run, without deploying
-}
-
-
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.6'
+    gradleVersion = '2.1'
 }

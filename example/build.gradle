@@ -1,11 +1,11 @@
-import org.gradle.plugins.buster.BusterPlugin
+import com.github.rundis.buster.BusterPlugin
 
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath files('../build/libs/gradle-buster-plugin-0.2.4.1.jar'),
+        classpath files('../build/libs/gradle-buster-plugin-0.2.4.2.jar'),
                 'net.sf.jpathwatch:jpathwatch:0.95',
                 'org.seleniumhq.selenium:selenium-java:2.33.0',
                 'com.github.detro.ghostdriver:phantomjsdriver:1.0.4'
@@ -14,7 +14,7 @@ buildscript {
 
 
 apply plugin: 'base'
-apply plugin: 'buster'
+apply plugin: 'com.github.rundis.buster'
 
 // configure buster options
 buster {
