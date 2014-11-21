@@ -6,3 +6,6 @@
 /exampleMulti/example2/build
 /exampleMulti/example3/build
 /node_modules
+gradle-buster-plugin.iml
+.idea
+example/example.iml
