@@ -75,7 +75,6 @@ class BusterTestTask extends DefaultTask {
 
         new JUnitTestXml(stdOut.toString(), logger)
                 .writeReports(reportsDir)
-//                .writeFile(outputFile)
                 .validateNoErrors()
                 .logResults()
 
