@@ -1,20 +1,17 @@
 package com.github.rundis.buster
-
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.TaskAction
 import com.github.rundis.buster.internal.BusterJSParser
 import com.github.rundis.buster.internal.BusterTestingService
 import com.github.rundis.buster.internal.JUnitTestXml
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.TaskAction
 
 class BusterTestTask extends DefaultTask {
     static NAME = "busterTest"
 
+    @OutputDirectory
     File reportsDir = new File(project.buildDir, "busterTest-results")
-
-    @OutputFile
-    File outputFile = new File(reportsDir.path, "bustertests.xml")
 
     BusterTestingService service
 
@@ -64,9 +61,6 @@ class BusterTestTask extends DefaultTask {
         if (!reportsDir.exists()) {
             reportsDir.mkdirs()
         }
-        if (outputFile.exists()) {
-            outputFile.delete()
-        }
     }
 
     private void executeTests() {
@@ -80,7 +74,7 @@ class BusterTestTask extends DefaultTask {
         }
 
         new JUnitTestXml(stdOut.toString(), logger)
-                .writeFile(outputFile)
+                .writeReports(reportsDir)
                 .validateNoErrors()
                 .logResults()
 

@@ -38,6 +38,26 @@ class JUnitTestXmlSpec extends Specification {
         retVal
     }
 
+
+    def "xml with no error validates fine even if there is more than one test suite"() {
+        when:
+        def logger = Mock(Logger)
+        def xml = """<?xml version="1.0" encoding="UTF-8" ?>
+            <testsuites>
+                <testsuite errors="0" tests="3" time="0" failures="0" name="PhantomJS"/>
+            </testsuites>
+            <?xml version="1.0" encoding="UTF-8" ?>
+            <testsuites>
+                <testsuite errors="0" tests="3" time="0" failures="0" name="PhantomJS"/>
+            </testsuites>
+        """
+
+        def retVal = new JUnitTestXml(xml, logger).validateNoErrors()
+
+        then:
+        retVal
+    }
+
     def "xml with failures throws exception"() {
         given:
         def xml = """<?xml version="1.0" encoding="UTF-8" ?>
