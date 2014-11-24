@@ -1,35 +1,12 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
-    }
+plugins {
+    id 'groovy'
+    id 'idea'
+    id 'nu.studer.plugindev' version '1.0.3'
 }
-
-if (!project.hasProperty('bintray_username')) ext.bintray_username = ''
-if (!project.hasProperty('bintray_api_key')) ext.bintray_api_key = ''
-
-apply from: 'gradle/bintray.gradle'
-
-
-apply plugin: 'groovy'
-apply plugin: 'maven-publish'
-apply plugin: 'idea'
 
 description = 'Gradle Buster plugin for running busterjs tests'
 group = 'com.github.rundis'
 version = '0.2.4.2'
-
-
-repositories {
-    mavenCentral()
-}
-
-
-/*configurations {
-    sourceArchives
-}*/
 
 dependencies {
 
@@ -61,22 +38,29 @@ sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
 
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
+
+plugindev {
+    pluginImplementationClass 'com.github.rundis.buster.BusterPlugin'
+    pluginDescription 'A gradle plugin for running buster.js JavaScript tests'
+    pluginLicenses 'MIT' // DOH its really BSD
+    pluginTags 'gradle', 'plugin', 'buster', 'javascript', 'node'
+    authorId 'rundis'
+    authorName 'Magnus Rundberget'
+    authorEmail 'mrundberget@hotmail.com'
+    projectUrl 'https://github.com/rundis/gradle-buster-plugin'
+    projectInceptionYear '2013'
+    done() // do not omit this
+}
+
+bintray {
+    user = project.hasProperty( 'bintray_username' ) ? project.getProperty( 'bintray_username' ) : null
+    key = project.hasProperty( 'bintray_api_key' ) ? project.getProperty( 'bintray_api_key' ) : null
+    pkg.repo = 'maven'
 }
 
 
 
-publishing {
-    publications {
-        mavenCustom(MavenPublication) {
-            from components.java
-            artifact sourceJar
 
-            setArtifactId('gradle-buster-plugin')
-        }
-    }
-}
 
 
 sourceSets {
@@ -101,5 +85,5 @@ build.dependsOn integrationTest
 
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.1'
+    gradleVersion = '2.2'
 }
