@@ -134,7 +134,8 @@ projectsEvaluated {
 ### Version history
 
 #### 0.2.4.2
-* Updated to gradle 2.1
+* Fix for running tests with multiple buster configurations by [ehirsch](https://gist.github.com/ehirsch)
+* Updated to gradle 2.2
 * Modified publication to allow publishing to gradle plugin portal. Now you need to provide fully qualified plugin id
 
 #### 0.2.4.1
