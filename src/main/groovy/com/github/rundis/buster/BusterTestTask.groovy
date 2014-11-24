@@ -13,9 +13,6 @@ class BusterTestTask extends DefaultTask {
     @OutputDirectory
     File reportsDir = new File(project.buildDir, "busterTest-results")
 
-//    @OutputFile
-//    File outputFile = new File(reportsDir.path, "bustertests.xml")
-
     BusterTestingService service
 
 
@@ -64,9 +61,6 @@ class BusterTestTask extends DefaultTask {
         if (!reportsDir.exists()) {
             reportsDir.mkdirs()
         }
-//        if (outputFile.exists()) {
-//            outputFile.delete()
-//        }
     }
 
     private void executeTests() {
