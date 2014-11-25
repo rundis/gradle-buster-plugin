@@ -18,9 +18,10 @@ In addition you may of course test locally with any browser(s) you wish. In fact
 
 ### Set up plugin
 
+#### 0.2.4.2 and above
 ```groovy
 buildscript {
-    repositories { jcenter() }  // or mavenRepo urls: 'http://dl.bintray.com/rundis/maven'
+    repositories { jcenter() } // not needed for gradle 2.1/2.2 and above
     dependencies {
         classpath  'com.github.rundis:gradle-buster-plugin:0.2.4.2'
     }
@@ -33,6 +34,20 @@ build.dependsOn busterTest // Optional, hook up the relevant buster tasks into y
 
 ```
 
+#### 0.2.4.1 and below
+```groovy
+buildscript {
+    repositories {
+       maven {
+         url 'http://dl.bintray.com/rundis/maven'
+       }
+    dependencies {
+        classpath  'ord.gradle.buster:gradle-buster-plugin:0.2.4.1'
+    }
+}
+
+apply plugin: 'buster'
+```
 
 ### Configuration options
 ```groovy
@@ -98,7 +113,7 @@ It doesn't separate between configuration groups or take config group inheritanc
 ### Usage scenarios
 
 #### As part of a CI build
-* You would typically either 
+* You would typically either
 	* hook up the relevant gradle tasks as dependencies in your build task graph (as shown in the top)
 	* or specify gradle busterTest in a gradle build step in your build server config
 
@@ -155,7 +170,7 @@ projectsEvaluated {
 
 
 #### 0.2.2
-* Refactor buster-server process handling to allow running concurrent builds for same user 
+* Refactor buster-server process handling to allow running concurrent builds for same user
 * Added incremental support to busterTest task
 
 
