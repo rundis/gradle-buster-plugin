@@ -43,7 +43,7 @@ class JUnitTestXml {
 
     JUnitTestXml writeReports(File outputDir) {
         xml.eachWithIndex { String entry, int i ->
-            File out = new File(outputDir, "bustertests${{->if(0<i)i}}.xml")
+            File out = new File(outputDir, "bustertests${{->(0<i)?i:''}}.xml")
             out << entry
         }
         this
